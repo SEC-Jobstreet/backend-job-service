@@ -1,21 +1,34 @@
 package server
 
 import (
+	"time"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/SEC-Jobstreet/backend-job-service/graph"
 	"github.com/SEC-Jobstreet/backend-job-service/utils"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func newRouter(config *utils.Config) *gin.Engine {
 	router := gin.Default()
 
-	authRoutes := router.Group("/api/v1").Use(IsAuthorizedJWT(config))
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"},
+		AllowHeaders:     []string{"Origin", "content-type", "accept", "authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
-	authRoutes.POST("/", graphqlHandler())
-	authRoutes.GET("/query", playgroundHandler())
+	// authRoutes := router.Group("/api/v1").Use(IsAuthorizedJWT(config))
 
+	router.POST("/", graphqlHandler())
+	router.GET("/query", playgroundHandler())
+
+	router.Run(config.ListenIP + ":" + config.ListenPort)
 	return router
 }
 

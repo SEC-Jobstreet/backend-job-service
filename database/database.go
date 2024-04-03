@@ -22,13 +22,13 @@ func Connect(config *utils.Config) *DB {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(config.DB_URL))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("aaa", err)
 	}
 	defer cancel()
 
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("bbb", err)
 	}
 
 	return &DB{

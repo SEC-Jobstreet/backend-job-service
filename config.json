@@ -1,7 +1,7 @@
 {
     "ENVIRONMENT": "development",
     "HOST": "localhost",
-    "PORT": "4001",
+    "PORT": "4000",
     "DB_URL": "mongodb://localhost:27017/",
     "DB_NAME": "graphql-job-board"
 }
