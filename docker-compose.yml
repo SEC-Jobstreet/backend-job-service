@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    networks:
+      - job-network
+    ports:
+      - 27017:27017
+    volumes:
+      # seeding scripts
+      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      # named volumes
+      - mongodb:/data/db
+      - mongoconfig:/data/configdb
+
+  job_service:
+    container_name: backend-jobstreet-job-service-prod
+    image: backend-jobstreet-job-service-prod
+    build:
+      context: .
+      target: production
+    environment:
+      - ENVIRONMENT=production
+      - HOST=0.0.0.0
+      - DB_URL=mongodb://mongo:27017
+      - DB_NAME=graphql-job-board
+    ports:
+      - 4001:4001
+    depends_on:
+      - mongo
+    networks:
+      - job-network
+    restart: on-failure
+    entrypoint: ["/app/wait-for.sh", "mongo:27017", "--", "/app/start.sh"]
+    command: [ "/app/main" ]
+
+networks:
+  job-network:
+
+volumes:
+  # default dir on Ubuntu: /var/lib/docker/volumes
+  mongodb:
+  mongoconfig:

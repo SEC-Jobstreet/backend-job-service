@@ -1,0 +1,12 @@
+mutation CreateSavedJob($jobID: ID!, $candidateID: ID!) {
+  createSavedJob(jobID: $jobID, candidateID: $candidateID) {
+    _id
+    jobID
+    candidateID
+  }
+}
+
+{
+  "jobID": "1",
+  "candidateID": "2"
+}

@@ -1,0 +1,9 @@
+mutation DeleteQuery($id: ID!){
+    deleteJobListing(id: $id){
+    deletedJobId
+  }
+}
+
+{
+  "id": "660ce7de19646c7d5d1c5328"
+}

@@ -1,0 +1,19 @@
+mutation CreateJobListing($input: CreateJobListingInput!){
+  createJobListing(input: $input){
+    _id
+    title
+    description
+    company
+    status
+  }
+}
+
+
+{
+  "input": {
+    "title": "Software Development Engineer",
+    "description": "Lograsdk sdflwl sld, sfa am wer sdf a",
+    "company": "Google",
+    "status": "www.google.com/"
+  }
+}
