@@ -35,17 +35,18 @@ func main() {
 	// See https://github.com/rs/cors for full option listing
 	router.Use(cors.New(cors.Options{
 		AllowOriginFunc:  func(origin string) bool { return true },
-		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedOrigins:   []string{"*", "http://localhost:3000", "http://localhost:4000"},
 		AllowedMethods:   []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"ACCEPT", "Authorization", "Content-Type", "X-CSRF-Token", "Origin", "X-Requested-With", "Accept", "Authorization"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: true,
 		Debug:            true,
-		MaxAge:           300,
+		MaxAge:           86000,
 	}).Handler)
+
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)
-	err = http.ListenAndServe(":4000", router)
+	err = http.ListenAndServe("localhost:4000", router)
 	if err != nil {
 		panic(err)
 	}
