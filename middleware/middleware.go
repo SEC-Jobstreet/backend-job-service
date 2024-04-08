@@ -1,4 +1,4 @@
-package server
+package middleware
 
 import (
 	"github.com/SEC-Jobstreet/backend-job-service/utils"

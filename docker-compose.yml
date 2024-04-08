@@ -18,7 +18,7 @@ services:
 
   job_service:
     container_name: backend-jobstreet-job-service-prod
-    image: backend-jobstreet-job-service-prod
+    image: thanhquy1105/backend-jobstreet-job-service-prod
     build:
       context: .
       target: production
@@ -34,7 +34,6 @@ services:
     networks:
       - job-network
     restart: on-failure
-    entrypoint: ["/app/wait-for.sh", "mongo:27017", "--", "/app/start.sh"]
     command: [ "/app/main" ]
 
 networks:
