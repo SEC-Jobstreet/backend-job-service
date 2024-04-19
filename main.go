@@ -2,19 +2,28 @@ package main
 
 import (
 	"context"
-	"net/http"
+	"database/sql"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/SEC-Jobstreet/backend-job-service/graph"
+	"github.com/SEC-Jobstreet/backend-job-service/api"
+	_ "github.com/SEC-Jobstreet/backend-job-service/docs"
+	"github.com/SEC-Jobstreet/backend-job-service/models"
 	"github.com/SEC-Jobstreet/backend-job-service/utils"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/sync/errgroup"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
+//	@title			job Service API
+//	@version		1.0
+//	@description	This is a job Service Server.
+
+// @host		localhost:4000
+// @BasePath	/api/v1
 func main() {
 
 	config, err := utils.LoadConfig(".")
@@ -26,16 +35,44 @@ func main() {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
 
-	_, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	graph.NewDatabaseConnection(&config)
+	sqlDB, err := sql.Open("pgx", config.DBSource)
+	if err != nil {
+		log.Fatal().Msg("cannot connect to db")
+	}
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	store, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: sqlDB,
+	}), &gorm.Config{})
+	if err != nil {
+		log.Fatal().Msg("cannot connect to db")
+	}
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	err = models.MigrateJobs(store)
+	if err != nil {
+		log.Fatal().Msg("could not migrate db")
+	}
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", config.ListenPort)
-	http.ListenAndServe(":"+config.ListenPort, nil)
+	waitGroup, ctx := errgroup.WithContext(ctx)
+
+	runGinServer(ctx, waitGroup, config, store)
+
+	err = waitGroup.Wait()
+	if err != nil {
+		log.Fatal().Err(err).Msg("error from wait group")
+	}
+}
+
+func runGinServer(ctx context.Context, waitGroup *errgroup.Group, config utils.Config, store *gorm.DB) {
+	ginServer, err := api.NewServer(config, store)
+	if err != nil {
+		log.Fatal().Msg("cannot create server")
+	}
+
+	err = ginServer.Start(ctx, waitGroup, config.RESTfulServerAddress)
+	if err != nil {
+		log.Fatal().Msg("cannot start server")
+	}
 }

@@ -2,45 +2,42 @@ version: "3.9"
 
 services:
 
-  mongo:
-    image: mongo
-    restart: always
+  postgres:
+    image: postgres:13.12
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=job_service_jobstreet
+    volumes:
+      - job-service-prod-data-volume:/var/lib/postgresql/data
     networks:
       - job-network
     ports:
-      - 27017:27017
-    volumes:
-      # seeding scripts
-      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
-      # named volumes
-      - mongodb:/data/db
-      - mongoconfig:/data/configdb
+      - 5432:5432
+    user: postgres
 
   job_service:
-    container_name: backend-jobstreet-job-service-prod
-    image: backend-jobstreet-job-service-prod
+    container_name: backend-jobstreet-job-service-prod-container
+    image: thanhquy1105/backend-jobstreet-job-service-prod
     build:
       context: .
       target: production
     environment:
       - ENVIRONMENT=production
       - HOST=0.0.0.0
-      - DB_URL=mongodb://mongo:27017
-      - DB_NAME=graphql-job-board
+      - DB_SOURCE=postgresql://admin:admin@postgres:5432/job_service_jobstreet?sslmode=disable
     ports:
-      - 4001:4001
+      - 4000:4000
     depends_on:
-      - mongo
+      - postgres
     networks:
       - job-network
     restart: on-failure
-    entrypoint: ["/app/wait-for.sh", "mongo:27017", "--", "/app/start.sh"]
     command: [ "/app/main" ]
 
 networks:
   job-network:
 
 volumes:
-  # default dir on Ubuntu: /var/lib/docker/volumes
-  mongodb:
-  mongoconfig:
+  job-service-prod-data-volume:
+

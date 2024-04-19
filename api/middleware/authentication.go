@@ -1,4 +1,4 @@
-package server
+package middleware
 
 import (
 	"github.com/SEC-Jobstreet/backend-job-service/utils"
@@ -70,6 +70,7 @@ func IsAuthorizedJWT(config *utils.Config) gin.HandlerFunc {
 		// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
 		// 	return
 		// }
+		// fmt.Println(IDTokenClaims)
 		//checking the roles
 		// user_access_roles := IDTokenClaims.ResourceAccess.ApplicationServiceClient.Roles
 		// for _, b := range user_access_roles {

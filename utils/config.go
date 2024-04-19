@@ -7,11 +7,9 @@ import (
 // Config stores all configuration of the application.
 // The value are read by viper from a config file or environment variables.
 type Config struct {
-	Environment string `mapstructure:"ENVIRONMENT"`
-	ListenIP    string `mapstructure:"HOST"`
-	ListenPort  string `mapstructure:"PORT"`
-	DB_URL      string `mapstructure:"DB_URL"`
-	DB_NAME     string `mapstructure:"DB_NAME"`
+	Environment          string `mapstructure:"ENVIRONMENT"`
+	RESTfulServerAddress string `mapstructure:"RESTfulServerAddress"`
+	DBSource             string `mapstructure:"DB_SOURCE"`
 }
 
 // LoadConfig reads configuration from file or environment variable.

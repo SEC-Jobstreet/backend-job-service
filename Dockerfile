@@ -22,11 +22,9 @@ RUN apk add --no-cache ca-certificates
 COPY --from=builder /app/main .
 
 COPY config.json .
-COPY start.sh .
-COPY wait-for.sh .
+COPY db/migration ./db/migration
 
 # Expose port
-EXPOSE 4001
+EXPOSE 4000
 # Exec built binary
 CMD [ "/app/main" ]
-ENTRYPOINT [ "/app/start.sh" ]
