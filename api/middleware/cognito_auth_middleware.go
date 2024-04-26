@@ -14,8 +14,8 @@ import (
 
 	"github.com/SEC-Jobstreet/backend-job-service/models"
 	"github.com/SEC-Jobstreet/backend-job-service/utils"
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
 )
@@ -23,7 +23,6 @@ import (
 const (
 	authorizationHeaderKey  = "authorization"
 	authorizationTypeBearer = "bearer"
-	AuthorizationPayloadKey = "authorization_payload"
 )
 
 type Auth struct {
@@ -108,10 +107,6 @@ func (m *Auth) JWK() *JWK {
 	return m.jwk
 }
 
-func (m *Auth) JWKURL() string {
-	return m.jwkURL
-}
-
 func convertKey(rawE, rawN string) *rsa.PublicKey {
 	decodedE, err := base64.RawURLEncoding.DecodeString(rawE)
 	if err != nil {
@@ -193,7 +188,7 @@ func AuthMiddleware(config utils.Config) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
 			return
 		}
-		ctx.Set(AuthorizationPayloadKey, currentUser)
+		ctx.Set(utils.AuthorizationPayloadKey, currentUser)
 		ctx.Next()
 	}
 }

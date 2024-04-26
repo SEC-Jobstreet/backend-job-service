@@ -7,6 +7,8 @@ import (
 
 	"github.com/SEC-Jobstreet/backend-job-service/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
@@ -24,6 +26,10 @@ func NewServer(config utils.Config, store *gorm.DB) (*Server, error) {
 	server := &Server{
 		config: config,
 		store:  store,
+	}
+
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("currency", validCurrency)
 	}
 
 	server.setupRouter()

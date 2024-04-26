@@ -27,13 +27,12 @@ func (s *Server) setupRouter() {
 
 	authRoutes := router.Group("/api/v1")
 
-	authRoutes.GET("/job/:id", s.example)
-	authRoutes.GET("/jobs", s.example)
+	authRoutes.GET("/job/:id", s.GetJob)
+	authRoutes.GET("/jobs", s.JobList)
 
 	authRoutes.POST("/post_job", middleware.AuthMiddleware(s.config), s.PostJob)
-	authRoutes.POST("/job_accepted", middleware.AuthMiddleware(s.config), s.example)
-	authRoutes.POST("/job_closed", middleware.AuthMiddleware(s.config), s.example)
-	authRoutes.GET("/job_by_employer_id/:id", middleware.AuthMiddleware(s.config), s.example)
+	authRoutes.POST("/job_status", middleware.AuthMiddleware(s.config), s.example)
+	authRoutes.GET("/jobs_by_employer", middleware.AuthMiddleware(s.config), s.GetJobByEmployer)
 
 	s.router = router
 }
