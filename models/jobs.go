@@ -1,38 +1,38 @@
 package models
 
 import (
-	"time"
-
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Jobs struct {
-	gorm.Model
-	EmployerID   uint
+	ID uuid.UUID `gorm:"primarykey"`
+
+	EmployerID   string
+	Status       string `gorm:"not null; default: REVIEW"` // REVIEW, POSTED, CLOSED
 	Title        string `gorm:"not null"`
 	Type         string
-	Description  string `gorm:"not null"`
 	WorkWhenever bool
 	WorkShift    string
+	Description  string `gorm:"not null"`
 	Visa         bool
-	Experience   string
-	StartDate    time.Time
+	Experience   uint
+	StartDate    int64
+	Currency     string
 	ExactSalary  uint
-	RangeSalary  RangeSalary `gorm:"embedded;embeddedPrefix:rangesalary_"`
-	ExpireAt     time.Time
+	RangeSalary  string
+	ExpireAt     int64
 
-	EnterpriseID      uint
+	CreatedAt int64 `gorm:"autoCreateTime"`
+	UpdatedAt int64 `gorm:"autoUpdateTime"`
+
+	EnterpriseID      uuid.UUID
 	EnterpriseName    string
 	EnterpriseAddress string
 
-	Crawl         bool `gorm:"default:false"`
+	Crawl         bool `gorm:"default: false"`
 	JobURL        string
 	JobSourceName string
-}
-
-type RangeSalary struct {
-	From uint
-	To   uint
 }
 
 func MigrateJobs(db *gorm.DB) error {
