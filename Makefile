@@ -28,7 +28,7 @@ build_app:
 	docker build -t thanhquy1105/backend-jobstreet-job-service-prod:latest .
 
 run_app:
-	docker run --name backend-jobstreet-job-service-prod --network job-network -p 4000:4000 -e DB_SOURCE="postgresql://admin:admin@postgres:5432/job_service_jobstreet?sslmode=disable" thanhquy1105/backend-jobstreet-job-service-prod:latest
+	docker run --name backend-jobstreet-job-service-prod --network job-network -p 4003:4003 -e DB_SOURCE="postgresql://admin:admin@postgres:5432/job_service_jobstreet?sslmode=disable" thanhquy1105/backend-jobstreet-job-service-prod:latest
 
 start_app:
 	docker start backend-jobstreet-job-service-prod
