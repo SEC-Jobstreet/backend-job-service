@@ -30,9 +30,10 @@ func (s *Server) setupRouter() {
 	authRoutes.GET("/job/:id", s.GetJob)
 	authRoutes.GET("/jobs", s.JobList)
 
-	authRoutes.POST("/post_job", middleware.AuthMiddleware(s.config), s.PostJob)
-	authRoutes.POST("/job_status", middleware.AuthMiddleware(s.config), s.example)
-	authRoutes.GET("/jobs_by_employer", middleware.AuthMiddleware(s.config), s.GetJobByEmployer)
+	// Employer Cognito
+	authRoutes.POST("/post_job", middleware.AuthMiddleware(s.config, []string{"employers"}), s.PostJob)
+	authRoutes.POST("/job_status", middleware.AuthMiddleware(s.config, []string{"employer", "admin"}), s.example)
+	authRoutes.GET("/jobs_by_employer", middleware.AuthMiddleware(s.config, []string{"employer", "admin"}), s.GetJobByEmployer)
 
 	s.router = router
 }

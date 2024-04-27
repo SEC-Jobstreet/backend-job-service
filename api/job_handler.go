@@ -33,6 +33,7 @@ type jobPostingRequest struct {
 }
 
 func (s *Server) PostJob(ctx *gin.Context) {
+
 	var request jobPostingRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))

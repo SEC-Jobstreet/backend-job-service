@@ -129,7 +129,7 @@ func convertKey(rawE, rawN string) *rsa.PublicKey {
 	return pubKey
 }
 
-func AuthMiddleware(config utils.Config) gin.HandlerFunc {
+func AuthMiddleware(config utils.Config, accessibleRoles []string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
 		if len(authorizationHeader) == 0 {
@@ -188,7 +188,25 @@ func AuthMiddleware(config utils.Config) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
 			return
 		}
+
+		if !HasPermission(currentUser.CognitoGroups, accessibleRoles) {
+			err := fmt.Errorf("permission denied")
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
+			return
+		}
+
 		ctx.Set(utils.AuthorizationPayloadKey, currentUser)
 		ctx.Next()
 	}
+}
+
+func HasPermission(userRoles []string, accessibleRoles []string) bool {
+	for _, role := range accessibleRoles {
+		for _, userRole := range userRoles {
+			if userRole == role {
+				return true
+			}
+		}
+	}
+	return false
 }
