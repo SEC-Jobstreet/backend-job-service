@@ -15,10 +15,10 @@ import (
 )
 
 func (server *Server) PostJob(ctx context.Context, request *pb.PostJobRequest) (*pb.PostJobResponse, error) {
-	currentUser, err := server.authorizeUser(ctx, server.config, []string{utils.EmployerRole})
-	if err != nil {
-		return nil, unauthenticatedError(err)
-	}
+	// currentUser, err := server.authorizeUser(ctx, server.config, []string{utils.EmployerRole})
+	// if err != nil {
+	// 	return nil, unauthenticatedError(err)
+	// }
 
 	violations := validatePostJobRequest(request)
 	if violations != nil {
@@ -34,7 +34,7 @@ func (server *Server) PostJob(ctx context.Context, request *pb.PostJobRequest) (
 
 	job := &models.Jobs{
 		ID:           id,
-		EmployerID:   currentUser.Username, // get accesstoken.username for employerID
+		EmployerID:   request.GetEmployerId(), // get accesstoken.username for employerID
 		Status:       "POSTED",
 		Title:        request.GetTitle(),
 		Type:         request.GetType(),
@@ -47,7 +47,7 @@ func (server *Server) PostJob(ctx context.Context, request *pb.PostJobRequest) (
 		Currency:     request.GetCurrency(),
 		ExactSalary:  request.GetExactSalary(),
 		RangeSalary:  request.GetRangeSalary(),
-		ExpireAt:     request.GetExpiresAt(),
+		ExpiresAt:    request.GetExpiresAt(),
 
 		EnterpriseID:      enterpriseId,
 		EnterpriseName:    request.GetEnterpriseName(),

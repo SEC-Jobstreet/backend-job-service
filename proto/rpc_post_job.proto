@@ -27,6 +27,8 @@ message PostJobRequest {
     optional bool   crawl = 16;
 	optional string job_url = 17;
 	optional string job_source_name = 18;
+    
+	optional string employer_id = 19;
 }
 
 message PostJobResponse {

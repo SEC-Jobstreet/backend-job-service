@@ -21,7 +21,7 @@ type Jobs struct {
 	Currency     string
 	ExactSalary  uint32
 	RangeSalary  string
-	ExpireAt     int64
+	ExpiresAt    int64
 
 	CreatedAt int64 `gorm:"autoCreateTime"`
 	UpdatedAt int64 `gorm:"autoUpdateTime"`

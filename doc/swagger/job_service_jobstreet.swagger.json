@@ -353,6 +353,9 @@
         },
         "jobSourceName": {
           "type": "string"
+        },
+        "employerId": {
+          "type": "string"
         }
       }
     },

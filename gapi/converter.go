@@ -21,7 +21,7 @@ func convertJob(job models.Jobs) *pb.Job {
 		Currency:     job.Currency,
 		ExactSalary:  job.ExactSalary,
 		RangeSalary:  job.RangeSalary,
-		ExpiresAt:    job.ExpireAt,
+		ExpiresAt:    job.ExpiresAt,
 
 		CreatedAt: job.CreatedAt,
 		UpdatedAt: job.UpdatedAt,
