@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package jobstreet.job;
+
+import "job.proto";
+option go_package = "github.com/SEC-Jobstreet/backend-job-service/pb";
+
+message GetJobByIDRequest {
+    string id = 1;
+}
+
+message GetJobByIDResponse {
+    Job job = 1;
+}

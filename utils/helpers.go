@@ -9,6 +9,9 @@ import (
 
 const (
 	AuthorizationPayloadKey = "authorization_payload"
+	CandidateRole           = "candidates"
+	EmployerRole            = "employers"
+	Admin                   = "admin"
 )
 
 func GetCurrentUser(ctx context.Context) (models.AuthClaim, error) {

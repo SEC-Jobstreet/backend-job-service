@@ -18,8 +18,8 @@ new_migrate:
 
 # run postgres container with network 
 run_postgres:
-	-docker network create job-network
-	docker run --name postgres --network job-network -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -d postgres:13.12 
+	-docker network create jobstreet-network
+	docker run --name postgres --network jobstreet-network -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -d postgres:13.12 
 
 start_postgres:
 	docker start postgres
@@ -28,7 +28,7 @@ build_app:
 	docker build -t thanhquy1105/backend-jobstreet-job-service-prod:latest .
 
 run_app:
-	docker run --name backend-jobstreet-job-service-prod --network job-network -p 4003:4003 -e DB_SOURCE="postgresql://admin:admin@postgres:5432/job_service_jobstreet?sslmode=disable" thanhquy1105/backend-jobstreet-job-service-prod:latest
+	docker run --name backend-jobstreet-job-service-prod --network jobstreet-network -p 8080:8080 -p 9090:9090 -e DB_SOURCE="postgresql://admin:admin@postgres:5432/job_service_jobstreet?sslmode=disable" thanhquy1105/backend-jobstreet-job-service-prod:latest
 
 start_app:
 	docker start backend-jobstreet-job-service-prod
@@ -55,6 +55,21 @@ sqlc:
 # generate swagger
 swagger:
 	swag init --parseDependency -g main.go
+
+proto:
+# For mac
+# rm -f pb/*.go
+# rm -f doc/swagger/*.swagger.json
+
+# For windows
+	-del pb\*.go
+	-del doc\swagger\*.swagger.json
+
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
+	--openapiv2_out=doc/swagger --openapiv2_opt=allow_merge=true,merge_file_name=job_service_jobstreet \
+	proto/*.proto
 
 # run test
 test:

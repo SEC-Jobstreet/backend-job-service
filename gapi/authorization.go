@@ -1,11 +1,11 @@
-package middleware
+package gapi
 
 import (
+	"context"
 	"crypto/rsa"
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"math/big"
@@ -14,15 +14,15 @@ import (
 
 	"github.com/SEC-Jobstreet/backend-job-service/models"
 	"github.com/SEC-Jobstreet/backend-job-service/utils"
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc/metadata"
 )
 
 const (
-	authorizationHeaderKey  = "authorization"
-	authorizationTypeBearer = "bearer"
+	authorizationHeader = "authorization"
+	authorizationBearer = "bearer"
 )
 
 type Auth struct {
@@ -129,75 +129,62 @@ func convertKey(rawE, rawN string) *rsa.PublicKey {
 	return pubKey
 }
 
-func AuthMiddleware(config utils.Config, accessibleRoles []string) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
-		if len(authorizationHeader) == 0 {
-			err := errors.New("authorization header is not provided")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
-			return
-		}
-
-		fields := strings.Fields(authorizationHeader)
-		if len(fields) < 2 {
-			err := errors.New("invalid authorization header format")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
-			return
-		}
-
-		authorizationType := strings.ToLower(fields[0])
-		if authorizationType != authorizationTypeBearer {
-			err := fmt.Errorf("unsupported authorization type %s", authorizationType)
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
-			return
-		}
-		accessToken := fields[1]
-
-		// Validate token cognito
-		auth := NewAuth(config)
-		err := auth.CacheJWK()
-		if err != nil {
-			err := fmt.Errorf("AuthMiddleware - Error cacheJWK, error = %v", err)
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
-			return
-		}
-
-		token, err := auth.ParseJWT(accessToken)
-		if err != nil {
-			err := fmt.Errorf("AuthMiddleware - Error ParseJWT, error = %v", err)
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
-			return
-		}
-
-		if !token.Valid {
-			err := fmt.Errorf("AuthMiddleware - Invalid token")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
-			return
-		}
-
-		// Parse token to struct user and store into context
-		claims, ok := token.Claims.(jwt.MapClaims)
-		if !ok {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid token")
-			return
-		}
-		var currentUser models.AuthClaim
-		errDecode := mapstructure.Decode(claims, &currentUser)
-		if errDecode != nil {
-			err := fmt.Errorf("AuthMiddleware - Cannot decode claims %v to current user, error %v", utils.LogFull(claims), errDecode)
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
-			return
-		}
-
-		if len(accessibleRoles) != 0 && !HasPermission(currentUser.CognitoGroups, accessibleRoles) {
-			err := fmt.Errorf("permission denied")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err))
-			return
-		}
-
-		ctx.Set(utils.AuthorizationPayloadKey, currentUser)
-		ctx.Next()
+func (server *Server) authorizeUser(ctx context.Context, config utils.Config, accessibleRoles []string) (*models.AuthClaim, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("missing metadata")
 	}
+
+	values := md.Get(authorizationHeader)
+	if len(values) == 0 {
+		return nil, fmt.Errorf("missing authorization header")
+	}
+
+	authHeader := values[0]
+	fields := strings.Fields(authHeader)
+	if len(fields) < 2 {
+		return nil, fmt.Errorf("invalid authorization header format")
+	}
+
+	authType := strings.ToLower(fields[0])
+	if authType != authorizationBearer {
+		return nil, fmt.Errorf("unsupported authorization type: %s", authType)
+	}
+
+	accessToken := fields[1]
+
+	// Validate token cognito
+	auth := NewAuth(config)
+	err := auth.CacheJWK()
+	if err != nil {
+		return nil, fmt.Errorf("AuthMiddleware - Error cacheJWK, error = %v", err)
+	}
+
+	token, err := auth.ParseJWT(accessToken)
+	if err != nil {
+		return nil, fmt.Errorf("AuthMiddleware - Error ParseJWT, error = %v", err)
+	}
+
+	if !token.Valid {
+		return nil, fmt.Errorf("AuthMiddleware - Invalid token")
+	}
+
+	// Parse token to struct user and store into context
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, fmt.Errorf("AuthMiddleware - Invalid token")
+	}
+	var currentUser models.AuthClaim
+	errDecode := mapstructure.Decode(claims, &currentUser)
+	if errDecode != nil {
+		return nil, fmt.Errorf("AuthMiddleware - Cannot decode claims %v to current user, error %v", utils.LogFull(claims), errDecode)
+	}
+
+	if len(accessibleRoles) != 0 && !HasPermission(currentUser.CognitoGroups, accessibleRoles) {
+		return nil, fmt.Errorf("permission denied")
+	}
+
+	return &currentUser, nil
 }
 
 func HasPermission(userRoles []string, accessibleRoles []string) bool {

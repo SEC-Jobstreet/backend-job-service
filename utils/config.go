@@ -7,11 +7,14 @@ import (
 // Config stores all configuration of the application.
 // The value are read by viper from a config file or environment variables.
 type Config struct {
-	Environment          string `mapstructure:"ENVIRONMENT"`
-	RESTfulServerAddress string `mapstructure:"RESTfulServerAddress"`
-	DBSource             string `mapstructure:"DB_SOURCE"`
-	CognitoRegion        string `mapstructure:"COGNITO_REGION"`
-	CognitoUserPoolID    string `mapstructure:"COGNITO_USER_POOL_ID"`
+	Environment                 string `mapstructure:"ENVIRONMENT"`
+	DBSource                    string `mapstructure:"DB_SOURCE"`
+	GRPCServerAddress           string `mapstructure:"GRPCServerAddress"`
+	HTTPServerAddress           string `mapstructure:"HTTPServerAddress"`
+	CognitoRegionCandidates     string `mapstructure:"COGNITO_REGION_CANDIDATES"`
+	CognitoUserPoolIDCandidates string `mapstructure:"COGNITO_USER_POOL_ID_CANDIDATES"`
+	CognitoRegionEmployers      string `mapstructure:"COGNITO_REGION_EMPLOYERS"`
+	CognitoUserPoolIDEmployers  string `mapstructure:"COGNITO_USER_POOL_ID_EMPLOYERS"`
 }
 
 // LoadConfig reads configuration from file or environment variable.

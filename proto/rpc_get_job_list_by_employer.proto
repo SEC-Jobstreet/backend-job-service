@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package jobstreet.job;
+
+import "job.proto";
+
+option go_package = "github.com/SEC-Jobstreet/backend-job-service/pb";
+
+message JobListByEmployerRequest {
+    int32 page_id = 1;
+    int32 page_size = 2;
+}
+
+message JobListResponse {
+    int64 total = 1;
+    int32 page_id = 2;
+    int32 page_size = 3;
+    repeated Job jobs = 4;
+}

@@ -1,0 +1,396 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Job Service gRPC API",
+    "version": "1.0",
+    "contact": {
+      "name": "Jobstreet",
+      "url": "https://github.com/SEC-Jobstreet",
+      "email": "thanhquy1105@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "JobService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/job/{id}": {
+      "get": {
+        "summary": "get job by id",
+        "description": "Use this API to get a job by id",
+        "operationId": "JobService_GetJobByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobGetJobByIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "JobService"
+        ]
+      }
+    },
+    "/api/v1/jobs": {
+      "get": {
+        "summary": "Search jobs",
+        "description": "Use this API to search jobs",
+        "operationId": "JobService_GetJobList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobJobListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "JobService"
+        ]
+      }
+    },
+    "/api/v1/jobs_by_employer": {
+      "get": {
+        "summary": "Get job list by employer",
+        "description": "Use this API to get job list by employer",
+        "operationId": "JobService_GetJobListByEmployer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobJobListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pageId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "JobService"
+        ]
+      }
+    },
+    "/api/v1/post_job": {
+      "post": {
+        "summary": "Post job",
+        "description": "Use this API to post job",
+        "operationId": "JobService_PostJob",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobPostJobResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jobPostJobRequest"
+            }
+          }
+        ],
+        "tags": [
+          "JobService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "jobGetJobByIDResponse": {
+      "type": "object",
+      "properties": {
+        "job": {
+          "$ref": "#/definitions/jobJob"
+        }
+      }
+    },
+    "jobJob": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "employerId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "workWhenever": {
+          "type": "boolean"
+        },
+        "workShift": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "visa": {
+          "type": "boolean"
+        },
+        "experience": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "exactSalary": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "rangeSalary": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "CreatedAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "UpdatedAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "enterpriseId": {
+          "type": "string"
+        },
+        "enterpriseName": {
+          "type": "string"
+        },
+        "enterpriseAddress": {
+          "type": "string"
+        },
+        "crawl": {
+          "type": "boolean"
+        },
+        "jobUrl": {
+          "type": "string"
+        },
+        "jobSourceName": {
+          "type": "string"
+        }
+      }
+    },
+    "jobJobListResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "string",
+          "format": "int64"
+        },
+        "pageId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "jobs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/jobJob"
+          }
+        }
+      }
+    },
+    "jobPostJobRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "workWhenever": {
+          "type": "boolean"
+        },
+        "workShift": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "visa": {
+          "type": "boolean"
+        },
+        "experience": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "exactSalary": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "rangeSalary": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "enterpriseId": {
+          "type": "string"
+        },
+        "enterpriseName": {
+          "type": "string"
+        },
+        "enterpriseAddress": {
+          "type": "string"
+        },
+        "crawl": {
+          "type": "boolean"
+        },
+        "jobUrl": {
+          "type": "string"
+        },
+        "jobSourceName": {
+          "type": "string"
+        }
+      }
+    },
+    "jobPostJobResponse": {
+      "type": "object",
+      "properties": {
+        "job": {
+          "$ref": "#/definitions/jobJob"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

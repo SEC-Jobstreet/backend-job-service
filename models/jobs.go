@@ -8,7 +8,7 @@ import (
 type Jobs struct {
 	ID uuid.UUID `gorm:"primarykey"`
 
-	EmployerID   string
+	EmployerID   string `gorm:"index:employer_id"`
 	Status       string `gorm:"not null; default: REVIEW"` // REVIEW, POSTED, CLOSED
 	Title        string `gorm:"not null"`
 	Type         string
@@ -16,10 +16,10 @@ type Jobs struct {
 	WorkShift    string
 	Description  string `gorm:"not null"`
 	Visa         bool
-	Experience   uint
+	Experience   uint32
 	StartDate    int64
 	Currency     string
-	ExactSalary  uint
+	ExactSalary  uint32
 	RangeSalary  string
 	ExpireAt     int64
 

@@ -27,7 +27,8 @@ services:
       - HOST=0.0.0.0
       - DB_SOURCE=postgresql://admin:admin@postgres:5432/job_service_jobstreet?sslmode=disable
     ports:
-      - 4000:4000
+      - 8080:8080
+      - 9090:9090
     depends_on:
       - postgres
     networks:

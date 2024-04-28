@@ -24,6 +24,6 @@ COPY --from=builder /app/main .
 COPY config.json .
 
 # Expose port
-EXPOSE 4003
+EXPOSE 8080 9090
 # Exec built binary
 CMD [ "/app/main" ]

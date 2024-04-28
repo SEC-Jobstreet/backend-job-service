@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package jobstreet.job;
+
+import "google/api/annotations.proto";
+import "rpc_get_job_by_id.proto";
+import "rpc_get_job_list_by_employer.proto";
+import "rpc_get_job_list.proto";
+import "rpc_post_job.proto";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/SEC-Jobstreet/backend-job-service/pb";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Job Service gRPC API";
+    version: "1.0";
+    contact: {
+      name: "Jobstreet";
+      url: "https://github.com/SEC-Jobstreet";
+      email: "thanhquy1105@gmail.com";
+    };
+  };
+};
+
+service JobService {
+  rpc PostJob(PostJobRequest) returns (PostJobResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/post_job"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to post job";
+      summary: "Post job";
+    };
+  }
+  rpc GetJobByID(GetJobByIDRequest) returns (GetJobByIDResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/job/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to get a job by id";
+      summary: "get job by id";
+    };
+  }
+  rpc GetJobList(JobListRequest) returns (JobListResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/jobs"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to search jobs";
+      summary: "Search jobs";
+    };
+  }
+  rpc GetJobListByEmployer(JobListByEmployerRequest) returns (JobListResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/jobs_by_employer"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to get job list by employer";
+      summary: "Get job list by employer";
+    };
+  }
+}

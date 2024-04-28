@@ -16,10 +16,10 @@ type jobPostingRequest struct {
 	WorkShift    string `json:"work_shift"`
 	Description  string `json:"description" binding:"required"`
 	Visa         bool   `json:"visa"`
-	Experience   uint   `json:"experience"` // 1: 0kn, 2: 1kn, 3: 23kn, 4: 4kn
+	Experience   uint32 `json:"experience"` // 1: 0kn, 2: 1kn, 3: 23kn, 4: 4kn
 	StartDate    int64  `json:"start_date" `
 	Currency     string `json:"currency" binding:"currency"` // AUD, GBP, HKD, IDR, MYR, NZD, PHP, SGD, THB, VND
-	ExactSalary  uint   `json:"exact_salary"`
+	ExactSalary  uint32 `json:"exact_salary"`
 	RangeSalary  string `json:"range_salary"`
 	ExpireAt     int64  `json:"expire_at" `
 
@@ -80,7 +80,11 @@ func (s *Server) PostJob(ctx *gin.Context) {
 		job.JobSourceName = request.JobSourceName
 	}
 
-	s.store.Create(job)
+	err = s.store.Create(job).Error
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
 
 	ctx.JSON(http.StatusOK, job)
 }
@@ -106,7 +110,12 @@ func (s *Server) GetJob(ctx *gin.Context) {
 	job := &models.Jobs{
 		ID: id,
 	}
-	s.store.First(job)
+	err = s.store.First(job).Error
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
 	ctx.JSON(http.StatusOK, job)
 }
 
@@ -118,7 +127,7 @@ type jobListRequest struct {
 }
 
 type jobListResponse struct {
-	Total int           `json:"total"`
+	Total int64         `json:"total"`
 	Data  []models.Jobs `json:"data"`
 }
 
@@ -135,7 +144,9 @@ func (s *Server) JobList(ctx *gin.Context) {
 	keyword := "%" + req.Keyword + "%"
 	address := "%" + req.Address + "%"
 
-	tx := s.store.Where(s.store.Where(
+	var total int64
+
+	err = s.store.Where(s.store.Where(
 		s.store.Where(
 			s.store.Where("title LIKE ?", keyword),
 		).Or(
@@ -145,12 +156,12 @@ func (s *Server) JobList(ctx *gin.Context) {
 			s.store.Where("enterprise_address LIKE ?", address),
 		).Or(
 			s.store.Where("description LIKE ?", address),
-		)).Where(
-		s.store.Where("status = ?", "POSTED"),
-	)).Find(&jobs)
-
-	total := len(jobs)
-	tx.Limit(req.PageSize).Offset((req.PageID - 1) * req.PageSize).Find(&jobs)
+		)).Where("status = ?", "POSTED")).Count(&total).
+		Limit(req.PageSize).Offset((req.PageID - 1) * req.PageSize).Find(&jobs).Error
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
 
 	res := jobListResponse{
 		Total: total,
@@ -180,11 +191,14 @@ func (s *Server) GetJobByEmployer(ctx *gin.Context) {
 	}
 
 	jobs := []models.Jobs{}
+	var total int64
 
-	tx := s.store.Where("employer_id = ?", currentUser.Username).Find(&jobs)
-
-	total := len(jobs)
-	tx.Limit(req.PageSize).Offset((req.PageID - 1) * req.PageSize).Find(&jobs)
+	err = s.store.Where("employer_id = ?", currentUser.Username).Count(&total).
+		Limit(req.PageSize).Offset((req.PageID - 1) * req.PageSize).Find(&jobs).Error
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
 
 	res := jobListResponse{
 		Total: total,
