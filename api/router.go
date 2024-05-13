@@ -25,6 +25,9 @@ func (s *Server) setupRouter() {
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	router.GET("/pods", s.PodDetect)
+	router.GET("/hello", s.HelloWorld)
+
 	authRoutes := router.Group("/api/v1")
 
 	authRoutes.GET("/job/:id", s.GetJob)

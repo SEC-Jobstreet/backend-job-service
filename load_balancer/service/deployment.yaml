@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: job-service
-        image: thanhquy1105/backend-jobstreet-job-service-prod
+        image: phatnguyen1812/jobstreet_service:load
         ports:
         - containerPort: 8080
         envFrom:
