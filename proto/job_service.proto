@@ -7,6 +7,9 @@ import "rpc_get_job_by_id.proto";
 import "rpc_get_job_list_by_employer.proto";
 import "rpc_get_job_list.proto";
 import "rpc_post_job.proto";
+import "rpc_edit_job.proto";
+import "rpc_close_job.proto";
+import "rpc_change_status_by_admin.proto";
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
@@ -33,6 +36,36 @@ service JobService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       description: "Use this API to post job";
       summary: "Post job";
+    };
+  }
+  rpc EditJob(EditJobRequest) returns (EditJobResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/edit_job"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to edit job";
+      summary: "Edit job";
+    };
+  }
+  rpc CloseJob(CloseJobRequest) returns (CloseJobResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/close_job"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to close job";
+      summary: "Close job";
+    };
+  }
+  rpc ChangeStatusJobByAdmin(ChangeStatusJobByAdminRequest) returns (ChangeStatusJobByAdminResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/change_job_status"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to change job status";
+      summary: "Change job status";
     };
   }
   rpc GetJobByID(GetJobByIDRequest) returns (GetJobByIDResponse) {

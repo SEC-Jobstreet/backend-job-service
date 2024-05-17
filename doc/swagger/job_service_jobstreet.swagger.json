@@ -21,6 +21,108 @@
     "application/json"
   ],
   "paths": {
+    "/api/v1/change_job_status": {
+      "post": {
+        "summary": "Change job status",
+        "description": "Use this API to change job status",
+        "operationId": "JobService_ChangeStatusJobByAdmin",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobChangeStatusJobByAdminResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jobChangeStatusJobByAdminRequest"
+            }
+          }
+        ],
+        "tags": [
+          "JobService"
+        ]
+      }
+    },
+    "/api/v1/close_job": {
+      "post": {
+        "summary": "Close job",
+        "description": "Use this API to close job",
+        "operationId": "JobService_CloseJob",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobCloseJobResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jobCloseJobRequest"
+            }
+          }
+        ],
+        "tags": [
+          "JobService"
+        ]
+      }
+    },
+    "/api/v1/edit_job": {
+      "post": {
+        "summary": "Edit job",
+        "description": "Use this API to edit job",
+        "operationId": "JobService_EditJob",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobEditJobResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/jobEditJobRequest"
+            }
+          }
+        ],
+        "tags": [
+          "JobService"
+        ]
+      }
+    },
     "/api/v1/job/{id}": {
       "get": {
         "summary": "get job by id",
@@ -181,6 +283,115 @@
     }
   },
   "definitions": {
+    "jobChangeStatusJobByAdminRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "jobChangeStatusJobByAdminResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "jobCloseJobRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "jobCloseJobResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "jobEditJobRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "workWhenever": {
+          "type": "boolean"
+        },
+        "workShift": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "visa": {
+          "type": "boolean"
+        },
+        "experience": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "exactSalary": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "rangeSalary": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "enterpriseId": {
+          "type": "string"
+        },
+        "enterpriseName": {
+          "type": "string"
+        },
+        "enterpriseAddress": {
+          "type": "string"
+        },
+        "crawl": {
+          "type": "boolean"
+        },
+        "jobUrl": {
+          "type": "string"
+        },
+        "jobSourceName": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "jobEditJobResponse": {
+      "type": "object",
+      "properties": {
+        "job": {
+          "$ref": "#/definitions/jobJob"
+        }
+      }
+    },
     "jobGetJobByIDResponse": {
       "type": "object",
       "properties": {

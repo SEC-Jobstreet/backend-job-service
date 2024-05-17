@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package jobstreet.job;
+
+import "job.proto";
+
+option go_package = "github.com/SEC-Jobstreet/backend-job-service/pb";
+
+message EditJobRequest {
+    string title = 1;
+    optional string type = 2;
+    optional bool   work_whenever = 3;
+    optional string work_shift = 4;
+    string description = 5;
+    optional bool   visa = 6;
+    optional uint32 experience = 7;
+    optional int64  start_date = 8;
+    string currency = 9;
+    optional uint32 exact_salary = 10;
+    optional string range_salary = 11;
+    optional int64  expires_at = 12;
+
+    optional string enterprise_id = 13;
+	optional string enterprise_name = 14;
+	optional string enterprise_address = 15;
+
+    optional bool   crawl = 16;
+	optional string job_url = 17;
+	optional string job_source_name = 18;
+
+    string id = 19;
+}
+
+message EditJobResponse {
+    Job job = 1;
+}

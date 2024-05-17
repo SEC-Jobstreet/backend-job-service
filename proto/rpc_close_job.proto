@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package jobstreet.job;
+
+option go_package = "github.com/SEC-Jobstreet/backend-job-service/pb";
+
+message CloseJobRequest {
+	string id = 1;
+}
+
+message CloseJobResponse {
+    string status = 1;
+}

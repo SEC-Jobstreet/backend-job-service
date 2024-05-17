@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package jobstreet.job;
+
+option go_package = "github.com/SEC-Jobstreet/backend-job-service/pb";
+
+message ChangeStatusJobByAdminRequest {
+	string id = 1;
+    string status = 2;
+}
+
+message ChangeStatusJobByAdminResponse {
+    string status = 1;
+}

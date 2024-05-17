@@ -19,10 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	JobService_PostJob_FullMethodName              = "/jobstreet.job.JobService/PostJob"
-	JobService_GetJobByID_FullMethodName           = "/jobstreet.job.JobService/GetJobByID"
-	JobService_GetJobList_FullMethodName           = "/jobstreet.job.JobService/GetJobList"
-	JobService_GetJobListByEmployer_FullMethodName = "/jobstreet.job.JobService/GetJobListByEmployer"
+	JobService_PostJob_FullMethodName                = "/jobstreet.job.JobService/PostJob"
+	JobService_EditJob_FullMethodName                = "/jobstreet.job.JobService/EditJob"
+	JobService_CloseJob_FullMethodName               = "/jobstreet.job.JobService/CloseJob"
+	JobService_ChangeStatusJobByAdmin_FullMethodName = "/jobstreet.job.JobService/ChangeStatusJobByAdmin"
+	JobService_GetJobByID_FullMethodName             = "/jobstreet.job.JobService/GetJobByID"
+	JobService_GetJobList_FullMethodName             = "/jobstreet.job.JobService/GetJobList"
+	JobService_GetJobListByEmployer_FullMethodName   = "/jobstreet.job.JobService/GetJobListByEmployer"
 )
 
 // JobServiceClient is the client API for JobService service.
@@ -30,6 +33,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JobServiceClient interface {
 	PostJob(ctx context.Context, in *PostJobRequest, opts ...grpc.CallOption) (*PostJobResponse, error)
+	EditJob(ctx context.Context, in *EditJobRequest, opts ...grpc.CallOption) (*EditJobResponse, error)
+	CloseJob(ctx context.Context, in *CloseJobRequest, opts ...grpc.CallOption) (*CloseJobResponse, error)
+	ChangeStatusJobByAdmin(ctx context.Context, in *ChangeStatusJobByAdminRequest, opts ...grpc.CallOption) (*ChangeStatusJobByAdminResponse, error)
 	GetJobByID(ctx context.Context, in *GetJobByIDRequest, opts ...grpc.CallOption) (*GetJobByIDResponse, error)
 	GetJobList(ctx context.Context, in *JobListRequest, opts ...grpc.CallOption) (*JobListResponse, error)
 	GetJobListByEmployer(ctx context.Context, in *JobListByEmployerRequest, opts ...grpc.CallOption) (*JobListResponse, error)
@@ -46,6 +52,33 @@ func NewJobServiceClient(cc grpc.ClientConnInterface) JobServiceClient {
 func (c *jobServiceClient) PostJob(ctx context.Context, in *PostJobRequest, opts ...grpc.CallOption) (*PostJobResponse, error) {
 	out := new(PostJobResponse)
 	err := c.cc.Invoke(ctx, JobService_PostJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *jobServiceClient) EditJob(ctx context.Context, in *EditJobRequest, opts ...grpc.CallOption) (*EditJobResponse, error) {
+	out := new(EditJobResponse)
+	err := c.cc.Invoke(ctx, JobService_EditJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *jobServiceClient) CloseJob(ctx context.Context, in *CloseJobRequest, opts ...grpc.CallOption) (*CloseJobResponse, error) {
+	out := new(CloseJobResponse)
+	err := c.cc.Invoke(ctx, JobService_CloseJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *jobServiceClient) ChangeStatusJobByAdmin(ctx context.Context, in *ChangeStatusJobByAdminRequest, opts ...grpc.CallOption) (*ChangeStatusJobByAdminResponse, error) {
+	out := new(ChangeStatusJobByAdminResponse)
+	err := c.cc.Invoke(ctx, JobService_ChangeStatusJobByAdmin_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,6 +117,9 @@ func (c *jobServiceClient) GetJobListByEmployer(ctx context.Context, in *JobList
 // for forward compatibility
 type JobServiceServer interface {
 	PostJob(context.Context, *PostJobRequest) (*PostJobResponse, error)
+	EditJob(context.Context, *EditJobRequest) (*EditJobResponse, error)
+	CloseJob(context.Context, *CloseJobRequest) (*CloseJobResponse, error)
+	ChangeStatusJobByAdmin(context.Context, *ChangeStatusJobByAdminRequest) (*ChangeStatusJobByAdminResponse, error)
 	GetJobByID(context.Context, *GetJobByIDRequest) (*GetJobByIDResponse, error)
 	GetJobList(context.Context, *JobListRequest) (*JobListResponse, error)
 	GetJobListByEmployer(context.Context, *JobListByEmployerRequest) (*JobListResponse, error)
@@ -96,6 +132,15 @@ type UnimplementedJobServiceServer struct {
 
 func (UnimplementedJobServiceServer) PostJob(context.Context, *PostJobRequest) (*PostJobResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostJob not implemented")
+}
+func (UnimplementedJobServiceServer) EditJob(context.Context, *EditJobRequest) (*EditJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditJob not implemented")
+}
+func (UnimplementedJobServiceServer) CloseJob(context.Context, *CloseJobRequest) (*CloseJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CloseJob not implemented")
+}
+func (UnimplementedJobServiceServer) ChangeStatusJobByAdmin(context.Context, *ChangeStatusJobByAdminRequest) (*ChangeStatusJobByAdminResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeStatusJobByAdmin not implemented")
 }
 func (UnimplementedJobServiceServer) GetJobByID(context.Context, *GetJobByIDRequest) (*GetJobByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetJobByID not implemented")
@@ -133,6 +178,60 @@ func _JobService_PostJob_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(JobServiceServer).PostJob(ctx, req.(*PostJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JobService_EditJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServiceServer).EditJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JobService_EditJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServiceServer).EditJob(ctx, req.(*EditJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JobService_CloseJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CloseJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServiceServer).CloseJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JobService_CloseJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServiceServer).CloseJob(ctx, req.(*CloseJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JobService_ChangeStatusJobByAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeStatusJobByAdminRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServiceServer).ChangeStatusJobByAdmin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JobService_ChangeStatusJobByAdmin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServiceServer).ChangeStatusJobByAdmin(ctx, req.(*ChangeStatusJobByAdminRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -201,6 +300,18 @@ var JobService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PostJob",
 			Handler:    _JobService_PostJob_Handler,
+		},
+		{
+			MethodName: "EditJob",
+			Handler:    _JobService_EditJob_Handler,
+		},
+		{
+			MethodName: "CloseJob",
+			Handler:    _JobService_CloseJob_Handler,
+		},
+		{
+			MethodName: "ChangeStatusJobByAdmin",
+			Handler:    _JobService_ChangeStatusJobByAdmin_Handler,
 		},
 		{
 			MethodName: "GetJobByID",

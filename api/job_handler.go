@@ -21,7 +21,7 @@ type jobPostingRequest struct {
 	Currency     string `json:"currency" binding:"currency"` // AUD, GBP, HKD, IDR, MYR, NZD, PHP, SGD, THB, VND
 	ExactSalary  uint32 `json:"exact_salary"`
 	RangeSalary  string `json:"range_salary"`
-	ExpireAt     int64  `json:"expire_at" `
+	ExpiresAt    int64  `json:"expires_at"`
 
 	EnterpriseID      uuid.UUID `json:"enterprise_id"`
 	EnterpriseName    string    `json:"enterprise_name"`
@@ -67,7 +67,7 @@ func (s *Server) PostJob(ctx *gin.Context) {
 		Currency:     request.Currency,
 		ExactSalary:  request.ExactSalary,
 		RangeSalary:  request.RangeSalary,
-		ExpireAt:     request.ExpireAt,
+		ExpiresAt:    request.ExpiresAt,
 
 		EnterpriseID:      request.EnterpriseID,
 		EnterpriseName:    request.EnterpriseName,

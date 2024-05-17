@@ -30,6 +30,7 @@ func (s *Server) setupRouter() {
 	authRoutes.GET("/job/:id", s.GetJob)
 	authRoutes.GET("/jobs", s.JobList)
 
+	// GRPC
 	// Employer Cognito
 	authRoutes.POST("/post_job", middleware.AuthMiddleware(s.config, []string{"employers"}), s.PostJob)
 	authRoutes.POST("/job_status", middleware.AuthMiddleware(s.config, []string{"employer", "admin"}), s.example)

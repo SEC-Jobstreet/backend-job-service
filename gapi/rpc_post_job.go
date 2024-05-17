@@ -35,7 +35,7 @@ func (server *Server) PostJob(ctx context.Context, request *pb.PostJobRequest) (
 	job := &models.Jobs{
 		ID:           id,
 		EmployerID:   request.GetEmployerId(), // get accesstoken.username for employerID
-		Status:       "POSTED",
+		Status:       "REVIEW",
 		Title:        request.GetTitle(),
 		Type:         request.GetType(),
 		WorkWhenever: request.GetWorkWhenever(),

@@ -9,7 +9,7 @@ type Jobs struct {
 	ID uuid.UUID `gorm:"primarykey"`
 
 	EmployerID   string `gorm:"index:employer_id"`
-	Status       string `gorm:"not null; default: REVIEW"` // REVIEW, POSTED, CLOSED
+	Status       string `gorm:"not null; default: REVIEW"` // REVIEW, POSTED, DENIED, CLOSED
 	Title        string `gorm:"not null"`
 	Type         string
 	WorkWhenever bool

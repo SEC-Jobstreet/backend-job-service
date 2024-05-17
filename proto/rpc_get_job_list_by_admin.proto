@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package jobstreet.job;
+
+option go_package = "github.com/SEC-Jobstreet/backend-job-service/pb";
+
+message JobListByAdminRequest {
+    int32  page_id = 1;
+    int32  page_size = 2;
+	optional string status = 3;
+}
