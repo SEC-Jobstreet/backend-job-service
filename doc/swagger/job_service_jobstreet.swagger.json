@@ -207,6 +207,52 @@
         ]
       }
     },
+    "/api/v1/jobs_by_admin": {
+      "get": {
+        "summary": "Get jobs by admin",
+        "description": "Use this API to get jobs by admin",
+        "operationId": "JobService_GetJobListByAdmin",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobJobListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pageId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "JobService"
+        ]
+      }
+    },
     "/api/v1/jobs_by_employer": {
       "get": {
         "summary": "Get job list by employer",

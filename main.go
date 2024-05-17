@@ -141,7 +141,7 @@ func runGatewayServer(ctx context.Context, waitGroup *errgroup.Group, config uti
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
 
-	assets, _ := fs.Sub(staticAssets, "doc-gRPC")
+	assets, _ := fs.Sub(staticAssets, "doc")
 	mux.Handle("/swagger/", http.FileServer(http.FS(assets)))
 
 	withCors := cors.New(cors.Options{

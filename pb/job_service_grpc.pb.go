@@ -25,6 +25,7 @@ const (
 	JobService_ChangeStatusJobByAdmin_FullMethodName = "/jobstreet.job.JobService/ChangeStatusJobByAdmin"
 	JobService_GetJobByID_FullMethodName             = "/jobstreet.job.JobService/GetJobByID"
 	JobService_GetJobList_FullMethodName             = "/jobstreet.job.JobService/GetJobList"
+	JobService_GetJobListByAdmin_FullMethodName      = "/jobstreet.job.JobService/GetJobListByAdmin"
 	JobService_GetJobListByEmployer_FullMethodName   = "/jobstreet.job.JobService/GetJobListByEmployer"
 )
 
@@ -38,6 +39,7 @@ type JobServiceClient interface {
 	ChangeStatusJobByAdmin(ctx context.Context, in *ChangeStatusJobByAdminRequest, opts ...grpc.CallOption) (*ChangeStatusJobByAdminResponse, error)
 	GetJobByID(ctx context.Context, in *GetJobByIDRequest, opts ...grpc.CallOption) (*GetJobByIDResponse, error)
 	GetJobList(ctx context.Context, in *JobListRequest, opts ...grpc.CallOption) (*JobListResponse, error)
+	GetJobListByAdmin(ctx context.Context, in *JobListByAdminRequest, opts ...grpc.CallOption) (*JobListResponse, error)
 	GetJobListByEmployer(ctx context.Context, in *JobListByEmployerRequest, opts ...grpc.CallOption) (*JobListResponse, error)
 }
 
@@ -103,6 +105,15 @@ func (c *jobServiceClient) GetJobList(ctx context.Context, in *JobListRequest, o
 	return out, nil
 }
 
+func (c *jobServiceClient) GetJobListByAdmin(ctx context.Context, in *JobListByAdminRequest, opts ...grpc.CallOption) (*JobListResponse, error) {
+	out := new(JobListResponse)
+	err := c.cc.Invoke(ctx, JobService_GetJobListByAdmin_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *jobServiceClient) GetJobListByEmployer(ctx context.Context, in *JobListByEmployerRequest, opts ...grpc.CallOption) (*JobListResponse, error) {
 	out := new(JobListResponse)
 	err := c.cc.Invoke(ctx, JobService_GetJobListByEmployer_FullMethodName, in, out, opts...)
@@ -122,6 +133,7 @@ type JobServiceServer interface {
 	ChangeStatusJobByAdmin(context.Context, *ChangeStatusJobByAdminRequest) (*ChangeStatusJobByAdminResponse, error)
 	GetJobByID(context.Context, *GetJobByIDRequest) (*GetJobByIDResponse, error)
 	GetJobList(context.Context, *JobListRequest) (*JobListResponse, error)
+	GetJobListByAdmin(context.Context, *JobListByAdminRequest) (*JobListResponse, error)
 	GetJobListByEmployer(context.Context, *JobListByEmployerRequest) (*JobListResponse, error)
 	mustEmbedUnimplementedJobServiceServer()
 }
@@ -147,6 +159,9 @@ func (UnimplementedJobServiceServer) GetJobByID(context.Context, *GetJobByIDRequ
 }
 func (UnimplementedJobServiceServer) GetJobList(context.Context, *JobListRequest) (*JobListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetJobList not implemented")
+}
+func (UnimplementedJobServiceServer) GetJobListByAdmin(context.Context, *JobListByAdminRequest) (*JobListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetJobListByAdmin not implemented")
 }
 func (UnimplementedJobServiceServer) GetJobListByEmployer(context.Context, *JobListByEmployerRequest) (*JobListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetJobListByEmployer not implemented")
@@ -272,6 +287,24 @@ func _JobService_GetJobList_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JobService_GetJobListByAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JobListByAdminRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServiceServer).GetJobListByAdmin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JobService_GetJobListByAdmin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServiceServer).GetJobListByAdmin(ctx, req.(*JobListByAdminRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _JobService_GetJobListByEmployer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(JobListByEmployerRequest)
 	if err := dec(in); err != nil {
@@ -320,6 +353,10 @@ var JobService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetJobList",
 			Handler:    _JobService_GetJobList_Handler,
+		},
+		{
+			MethodName: "GetJobListByAdmin",
+			Handler:    _JobService_GetJobListByAdmin_Handler,
 		},
 		{
 			MethodName: "GetJobListByEmployer",

@@ -10,6 +10,7 @@ import "rpc_post_job.proto";
 import "rpc_edit_job.proto";
 import "rpc_close_job.proto";
 import "rpc_change_status_by_admin.proto";
+import "rpc_get_job_list_by_admin.proto";
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
@@ -84,6 +85,15 @@ service JobService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       description: "Use this API to search jobs";
       summary: "Search jobs";
+    };
+  }
+  rpc GetJobListByAdmin(JobListByAdminRequest) returns (JobListResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/jobs_by_admin"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to get jobs by admin";
+      summary: "Get jobs by admin";
     };
   }
   rpc GetJobListByEmployer(JobListByEmployerRequest) returns (JobListResponse) {
