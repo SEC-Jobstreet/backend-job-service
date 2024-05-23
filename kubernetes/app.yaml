@@ -27,10 +27,12 @@ spec:
   selector:
     app: my-job-service-app
   ports:
-    - protocol: TCP
-      port: 8080
+    - port: 8080
+      protocol: TCP
+      name: gateway  
       targetPort: 8080
-    - protocol: TCP
-      port: 9090
+    - port: 9090
+      protocol: TCP 
+      name: grpc
       targetPort: 9090
   type: LoadBalancer
