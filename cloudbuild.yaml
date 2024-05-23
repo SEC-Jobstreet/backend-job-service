@@ -1,13 +1,13 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'asia-southeast1-docker.pkg.dev/jobstreet-421314/jobstreet-job-repo/job-serivce-image', './' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/jobstreet-421314/jobstreet-job-repo/job-serivce-image', './' ]
   id: 'Build Docker Image'
 
   # images:
-  # - 'asia-southeast1-docker.pkg.dev/jobstreet-421314/jobstreet-job-repo/job-serivce-image'
+  # - 'us-central1-docker.pkg.dev/jobstreet-421314/jobstreet-job-repo/job-serivce-image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'asia-southeast1-docker.pkg.dev/jobstreet-421314/jobstreet-job-repo/job-serivce-image' ]
+  args: ['push', 'us-central1-docker.pkg.dev/jobstreet-421314/jobstreet-job-repo/job-serivce-image' ]
   id: 'Push Docker Image'
 
 - name: 'google/cloud-sdk:latest'
@@ -16,9 +16,9 @@ steps:
   - -xe
   - -c
   - |
-    gcloud deploy apply --file deploy/pipeline.yaml --region=asia-southeast1
-    gcloud deploy apply --file deploy/prod.yaml --region=asia-southeast1
-    gcloud deploy releases create 'app-release-${SHORT_SHA}' --delivery-pipeline=jobstreet-job-cicd-pipeline --region=asia-southeast1 --skaffold-file=skaffold.yaml
+    gcloud deploy apply --file deploy/pipeline.yaml --region=us-central1
+    gcloud deploy apply --file deploy/prod.yaml --region=us-central1
+    gcloud deploy releases create 'app-release-${SHORT_SHA}' --delivery-pipeline=jobstreet-job-cicd-pipeline --region=us-central1 --skaffold-file=skaffold.yaml
 
 options:
   logging: CLOUD_LOGGING_ONLY

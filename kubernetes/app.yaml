@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: my-container
-          image: asia-southeast1-docker.pkg.dev/jobstreet-421314/jobstreet-job-repo/job-serivce-image
+          image: us-central1-docker.pkg.dev/jobstreet-421314/jobstreet-job-repo/job-serivce-image
           ports:
             - containerPort: 8080
             - containerPort: 9090
