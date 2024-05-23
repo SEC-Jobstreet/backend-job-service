@@ -1,0 +1,9 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: jobstreet-job-prod
+  annotations: {}
+  labels: {}
+description: jobstreet-job-prod
+gke:
+  cluster: projects/jobstreet-421314/locations/asia-southeast1/clusters/cluster-1
