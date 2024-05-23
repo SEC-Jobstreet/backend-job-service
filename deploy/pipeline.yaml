@@ -13,6 +13,6 @@ serialPipeline:
   # - targetId: staging
   #   profiles:
   #   - staging
-  - targetId: prod
+  - targetId: jobstreet-job-prod
   #   profiles:
   #   - prod
