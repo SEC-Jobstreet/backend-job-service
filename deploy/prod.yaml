@@ -6,4 +6,4 @@ metadata:
   labels: {}
 description: jobstreet-job-prod
 gke:
-  cluster: projects/jobstreet-421314/locations/asia-southeast1-a/clusters/cluster-1
+  cluster: projects/jobstreet-421314/locations/asia-southeast1/clusters/cluster-1
