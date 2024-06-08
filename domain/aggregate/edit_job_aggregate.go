@@ -45,8 +45,10 @@ func EditJobAggregateGRPC(ctx context.Context, config utils.Config, request *pb.
 	job["Experience"] = request.GetExperience()
 	job["StartDate"] = request.GetStartDate()
 	job["Currency"] = request.GetCurrency()
+	job["SalaryLevelDisplay"] = request.GetSalaryLevelDisplay()
 	job["ExactSalary"] = request.GetExactSalary()
 	job["RangeSalary"] = request.GetRangeSalary()
+	job["PaidPeriod"] = request.GetPaidPeriod()
 	job["ExpiresAt"] = request.GetExpiresAt()
 
 	job["EnterpriseID"] = enterpriseId

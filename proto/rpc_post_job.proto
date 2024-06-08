@@ -37,7 +37,9 @@ message PostJobRequest {
     optional string enterprise_size = 25;
     optional string enterprise_url = 26;
     optional string enterprise_license = 27;
-    
+
+    optional string salary_level_display = 28;
+    optional string paid_period = 29;
 }
 
 message PostJobResponse {

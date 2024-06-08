@@ -25,29 +25,31 @@ type Job struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id                string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	EmployerId        string `protobuf:"bytes,2,opt,name=employer_id,json=employerId,proto3" json:"employer_id,omitempty"`
-	Status            string `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
-	Title             string `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
-	Type              string `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"`
-	WorkWhenever      bool   `protobuf:"varint,6,opt,name=work_whenever,json=workWhenever,proto3" json:"work_whenever,omitempty"`
-	WorkShift         string `protobuf:"bytes,7,opt,name=work_shift,json=workShift,proto3" json:"work_shift,omitempty"`
-	Description       string `protobuf:"bytes,8,opt,name=description,proto3" json:"description,omitempty"`
-	Visa              bool   `protobuf:"varint,9,opt,name=visa,proto3" json:"visa,omitempty"`
-	Experience        uint32 `protobuf:"varint,10,opt,name=experience,proto3" json:"experience,omitempty"`
-	StartDate         int64  `protobuf:"varint,11,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
-	Currency          string `protobuf:"bytes,12,opt,name=currency,proto3" json:"currency,omitempty"`
-	ExactSalary       uint32 `protobuf:"varint,13,opt,name=exact_salary,json=exactSalary,proto3" json:"exact_salary,omitempty"`
-	RangeSalary       string `protobuf:"bytes,14,opt,name=range_salary,json=rangeSalary,proto3" json:"range_salary,omitempty"`
-	ExpiresAt         int64  `protobuf:"varint,15,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
-	CreatedAt         int64  `protobuf:"varint,16,opt,name=CreatedAt,proto3" json:"CreatedAt,omitempty"`
-	UpdatedAt         int64  `protobuf:"varint,17,opt,name=UpdatedAt,proto3" json:"UpdatedAt,omitempty"`
-	EnterpriseId      string `protobuf:"bytes,18,opt,name=enterprise_id,json=enterpriseId,proto3" json:"enterprise_id,omitempty"`
-	EnterpriseName    string `protobuf:"bytes,19,opt,name=enterprise_name,json=enterpriseName,proto3" json:"enterprise_name,omitempty"`
-	EnterpriseAddress string `protobuf:"bytes,20,opt,name=enterprise_address,json=enterpriseAddress,proto3" json:"enterprise_address,omitempty"`
-	Crawl             bool   `protobuf:"varint,21,opt,name=crawl,proto3" json:"crawl,omitempty"`
-	JobUrl            string `protobuf:"bytes,22,opt,name=job_url,json=jobUrl,proto3" json:"job_url,omitempty"`
-	JobSourceName     string `protobuf:"bytes,23,opt,name=job_source_name,json=jobSourceName,proto3" json:"job_source_name,omitempty"`
+	Id                 string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	EmployerId         string `protobuf:"bytes,2,opt,name=employer_id,json=employerId,proto3" json:"employer_id,omitempty"`
+	Status             string `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+	Title              string `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
+	Type               string `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"`
+	WorkWhenever       bool   `protobuf:"varint,6,opt,name=work_whenever,json=workWhenever,proto3" json:"work_whenever,omitempty"`
+	WorkShift          string `protobuf:"bytes,7,opt,name=work_shift,json=workShift,proto3" json:"work_shift,omitempty"`
+	Description        string `protobuf:"bytes,8,opt,name=description,proto3" json:"description,omitempty"`
+	Visa               bool   `protobuf:"varint,9,opt,name=visa,proto3" json:"visa,omitempty"`
+	Experience         uint32 `protobuf:"varint,10,opt,name=experience,proto3" json:"experience,omitempty"`
+	StartDate          int64  `protobuf:"varint,11,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
+	Currency           string `protobuf:"bytes,12,opt,name=currency,proto3" json:"currency,omitempty"`
+	ExactSalary        uint32 `protobuf:"varint,13,opt,name=exact_salary,json=exactSalary,proto3" json:"exact_salary,omitempty"`
+	RangeSalary        string `protobuf:"bytes,14,opt,name=range_salary,json=rangeSalary,proto3" json:"range_salary,omitempty"`
+	ExpiresAt          int64  `protobuf:"varint,15,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
+	CreatedAt          int64  `protobuf:"varint,16,opt,name=CreatedAt,proto3" json:"CreatedAt,omitempty"`
+	UpdatedAt          int64  `protobuf:"varint,17,opt,name=UpdatedAt,proto3" json:"UpdatedAt,omitempty"`
+	EnterpriseId       string `protobuf:"bytes,18,opt,name=enterprise_id,json=enterpriseId,proto3" json:"enterprise_id,omitempty"`
+	EnterpriseName     string `protobuf:"bytes,19,opt,name=enterprise_name,json=enterpriseName,proto3" json:"enterprise_name,omitempty"`
+	EnterpriseAddress  string `protobuf:"bytes,20,opt,name=enterprise_address,json=enterpriseAddress,proto3" json:"enterprise_address,omitempty"`
+	Crawl              bool   `protobuf:"varint,21,opt,name=crawl,proto3" json:"crawl,omitempty"`
+	JobUrl             string `protobuf:"bytes,22,opt,name=job_url,json=jobUrl,proto3" json:"job_url,omitempty"`
+	JobSourceName      string `protobuf:"bytes,23,opt,name=job_source_name,json=jobSourceName,proto3" json:"job_source_name,omitempty"`
+	SalaryLevelDisplay string `protobuf:"bytes,24,opt,name=salary_level_display,json=salaryLevelDisplay,proto3" json:"salary_level_display,omitempty"`
+	PaidPeriod         string `protobuf:"bytes,25,opt,name=paid_period,json=paidPeriod,proto3" json:"paid_period,omitempty"`
 }
 
 func (x *Job) Reset() {
@@ -243,11 +245,25 @@ func (x *Job) GetJobSourceName() string {
 	return ""
 }
 
+func (x *Job) GetSalaryLevelDisplay() string {
+	if x != nil {
+		return x.SalaryLevelDisplay
+	}
+	return ""
+}
+
+func (x *Job) GetPaidPeriod() string {
+	if x != nil {
+		return x.PaidPeriod
+	}
+	return ""
+}
+
 var File_job_proto protoreflect.FileDescriptor
 
 var file_job_proto_rawDesc = []byte{
 	0x0a, 0x09, 0x6a, 0x6f, 0x62, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0d, 0x6a, 0x6f, 0x62,
-	0x73, 0x74, 0x72, 0x65, 0x65, 0x74, 0x2e, 0x6a, 0x6f, 0x62, 0x22, 0xc2, 0x05, 0x0a, 0x03, 0x4a,
+	0x73, 0x74, 0x72, 0x65, 0x65, 0x74, 0x2e, 0x6a, 0x6f, 0x62, 0x22, 0x95, 0x06, 0x0a, 0x03, 0x4a,
 	0x6f, 0x62, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
 	0x69, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x65, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x72, 0x5f, 0x69,
 	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x65, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65,
@@ -291,11 +307,16 @@ var file_job_proto_rawDesc = []byte{
 	0x0a, 0x07, 0x6a, 0x6f, 0x62, 0x5f, 0x75, 0x72, 0x6c, 0x18, 0x16, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x06, 0x6a, 0x6f, 0x62, 0x55, 0x72, 0x6c, 0x12, 0x26, 0x0a, 0x0f, 0x6a, 0x6f, 0x62, 0x5f, 0x73,
 	0x6f, 0x75, 0x72, 0x63, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x17, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0d, 0x6a, 0x6f, 0x62, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x42,
-	0x31, 0x5a, 0x2f, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x53, 0x45,
-	0x43, 0x2d, 0x4a, 0x6f, 0x62, 0x73, 0x74, 0x72, 0x65, 0x65, 0x74, 0x2f, 0x62, 0x61, 0x63, 0x6b,
-	0x65, 0x6e, 0x64, 0x2d, 0x6a, 0x6f, 0x62, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f,
-	0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x0d, 0x6a, 0x6f, 0x62, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x12,
+	0x30, 0x0a, 0x14, 0x73, 0x61, 0x6c, 0x61, 0x72, 0x79, 0x5f, 0x6c, 0x65, 0x76, 0x65, 0x6c, 0x5f,
+	0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x18, 0x18, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x73,
+	0x61, 0x6c, 0x61, 0x72, 0x79, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x44, 0x69, 0x73, 0x70, 0x6c, 0x61,
+	0x79, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x61, 0x69, 0x64, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64,
+	0x18, 0x19, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x70, 0x61, 0x69, 0x64, 0x50, 0x65, 0x72, 0x69,
+	0x6f, 0x64, 0x42, 0x31, 0x5a, 0x2f, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x53, 0x45, 0x43, 0x2d, 0x4a, 0x6f, 0x62, 0x73, 0x74, 0x72, 0x65, 0x65, 0x74, 0x2f, 0x62,
+	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2d, 0x6a, 0x6f, 0x62, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

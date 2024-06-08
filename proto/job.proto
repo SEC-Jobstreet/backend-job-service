@@ -31,4 +31,7 @@ message Job {
     bool   crawl = 21;
 	string job_url = 22;
 	string job_source_name = 23;
+
+    string salary_level_display = 24;
+    string paid_period = 25;
 }

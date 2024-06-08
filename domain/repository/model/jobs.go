@@ -8,20 +8,22 @@ import (
 type Jobs struct {
 	ID uuid.UUID `gorm:"primarykey"`
 
-	EmployerID   string `gorm:"index:employer_id"`
-	Status       string `gorm:"not null; default: REVIEW"` // REVIEW, POSTED, DENIED, CLOSED
-	Title        string `gorm:"not null"`
-	Type         string
-	WorkWhenever bool
-	WorkShift    string
-	Description  string `gorm:"not null"`
-	Visa         bool
-	Experience   uint32
-	StartDate    int64
-	Currency     string
-	ExactSalary  uint32
-	RangeSalary  string
-	ExpiresAt    int64
+	EmployerID         string `gorm:"index:employer_id"`
+	Status             string `gorm:"not null; default: REVIEW"` // REVIEW, POSTED, DENIED, CLOSED
+	Title              string `gorm:"not null"`
+	Type               string
+	WorkWhenever       bool
+	WorkShift          string
+	Description        string `gorm:"not null"`
+	Visa               bool
+	Experience         uint32
+	StartDate          int64
+	Currency           string
+	SalaryLevelDisplay string
+	PaidPeriod         string
+	ExactSalary        uint32
+	RangeSalary        string
+	ExpiresAt          int64
 
 	CreatedAt int64 `gorm:"autoCreateTime"`
 	UpdatedAt int64 `gorm:"autoUpdateTime"`
