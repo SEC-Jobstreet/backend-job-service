@@ -13,10 +13,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/SEC-Jobstreet/backend-job-service/gapi"
-	"github.com/SEC-Jobstreet/backend-job-service/models"
+	"github.com/SEC-Jobstreet/backend-job-service/domain/application"
+	"github.com/SEC-Jobstreet/backend-job-service/domain/repository"
+	"github.com/SEC-Jobstreet/backend-job-service/domain/repository/model"
+	"github.com/SEC-Jobstreet/backend-job-service/domain/service"
+	"github.com/SEC-Jobstreet/backend-job-service/domain/utils"
 	"github.com/SEC-Jobstreet/backend-job-service/pb"
-	"github.com/SEC-Jobstreet/backend-job-service/utils"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
@@ -58,15 +60,18 @@ func main() {
 		log.Fatal().Msg("cannot connect to db")
 	}
 
-	err = models.MigrateJobs(store)
+	err = model.MigrateJobs(store)
 	if err != nil {
 		log.Fatal().Msg("could not migrate db")
 	}
 
+	es := service.NewEmployerService(config.EmployerServiceAddress)
+	repository := repository.NewJobRepository(store, es)
+
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
-	runGrpcServer(ctx, waitGroup, config, store)
-	runGatewayServer(ctx, waitGroup, config, store)
+	runGrpcServer(ctx, waitGroup, config, repository)
+	runGatewayServer(ctx, waitGroup, config, repository)
 
 	err = waitGroup.Wait()
 	if err != nil {
@@ -74,13 +79,13 @@ func main() {
 	}
 }
 
-func runGrpcServer(ctx context.Context, waitGroup *errgroup.Group, config utils.Config, store *gorm.DB) {
-	server, err := gapi.NewServer(config, store)
+func runGrpcServer(ctx context.Context, waitGroup *errgroup.Group, config utils.Config, repository repository.JobRepository) {
+	server, err := application.NewServer(config, repository)
 	if err != nil {
 		log.Fatal().Msg("cannot create server")
 	}
 
-	grpcLogger := grpc.UnaryInterceptor(gapi.GrpcLogger)
+	grpcLogger := grpc.UnaryInterceptor(utils.GrpcLogger)
 
 	grpcServer := grpc.NewServer(grpcLogger)
 	pb.RegisterJobServiceServer(grpcServer, server)
@@ -115,8 +120,8 @@ func runGrpcServer(ctx context.Context, waitGroup *errgroup.Group, config utils.
 	})
 }
 
-func runGatewayServer(ctx context.Context, waitGroup *errgroup.Group, config utils.Config, store *gorm.DB) {
-	server, err := gapi.NewServer(config, store)
+func runGatewayServer(ctx context.Context, waitGroup *errgroup.Group, config utils.Config, repository repository.JobRepository) {
+	server, err := application.NewServer(config, repository)
 	if err != nil {
 		log.Fatal().Msg("cannot create server")
 	}
@@ -154,7 +159,7 @@ func runGatewayServer(ctx context.Context, waitGroup *errgroup.Group, config uti
 	}).Handler(mux)
 
 	httpServer := &http.Server{
-		Handler: gapi.HttpLogger(withCors),
+		Handler: utils.HttpLogger(withCors),
 		Addr:    config.HTTPServerAddress,
 	}
 

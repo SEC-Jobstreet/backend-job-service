@@ -613,6 +613,30 @@
         },
         "employerId": {
           "type": "string"
+        },
+        "employerRole": {
+          "type": "string"
+        },
+        "enterpriseCountry": {
+          "type": "string"
+        },
+        "enterpriseLatitude": {
+          "type": "string"
+        },
+        "enterpriseLongitude": {
+          "type": "string"
+        },
+        "enterpriseField": {
+          "type": "string"
+        },
+        "enterpriseSize": {
+          "type": "string"
+        },
+        "enterpriseUrl": {
+          "type": "string"
+        },
+        "enterpriseLicense": {
+          "type": "string"
         }
       }
     },

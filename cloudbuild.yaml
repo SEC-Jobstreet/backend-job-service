@@ -1,4 +1,13 @@
 steps:
+# Run tests and save to file
+# - name: golang:1.22
+#   entrypoint: /bin/bash
+#   args: 
+#     - -c
+#     - |
+#       go install github.com/jstemmer/go-junit-report/v2@latest
+#       2>&1 go test -timeout 1m -v ./... | /go/bin/go-junit-report -set-exit-code -iocopy -out ${SHORT_SHA}_test_log.xml
+
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'us-central1-docker.pkg.dev/jobstreet-421314/jobstreet-job-repo/job-serivce-image', './' ]
   id: 'Build Docker Image'
@@ -19,6 +28,13 @@ steps:
     gcloud deploy apply --file deploy/pipeline.yaml --region=us-central1
     gcloud deploy apply --file deploy/prod.yaml --region=us-central1
     gcloud deploy releases create 'app-release-${SHORT_SHA}' --delivery-pipeline=jobstreet-job-cicd-pipeline --region=us-central1 --skaffold-file=skaffold.yaml
+
+# Save test logs to Google Cloud Storage
+# artifacts:
+#   objects:
+#     location: gs://$_BUCKET_NAME/
+#     paths:
+#       - ${SHORT_SHA}_test_log.xml
 
 options:
   logging: CLOUD_LOGGING_ONLY

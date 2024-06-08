@@ -29,6 +29,15 @@ message PostJobRequest {
 	optional string job_source_name = 18;
     
 	optional string employer_id = 19;
+    optional string employer_role = 20;
+    optional string enterprise_country = 21;
+    optional string enterprise_latitude = 22;
+    optional string enterprise_longitude = 23;
+    optional string enterprise_field = 24;
+    optional string enterprise_size = 25;
+    optional string enterprise_url = 26;
+    optional string enterprise_license = 27;
+    
 }
 
 message PostJobResponse {

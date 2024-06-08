@@ -1,5 +1,5 @@
 # backend-job-service
-This repo is job Management Service of jobstreet application backend.
+This repo is job Management Service of jobstreet application backend and is applied Domain-Driven Design
 
 ## Deploy
 

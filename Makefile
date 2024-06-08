@@ -74,5 +74,7 @@ proto:
 # run test
 test:
 	go test -v -cover -short ./...
+	go test -v -cover -coverprofile cover.out -outputdir ./covers/ ./...
+	go tool cover -html ./covers/cover.out -o ./covers/cover.html
 
 .PHONY: build_run_prod new_migrate run_postgres migrate dropdb createdb start_postgres sqlc evans swagger proto

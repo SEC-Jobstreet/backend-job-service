@@ -1,8 +1,9 @@
 {
     "ENVIRONMENT": "development",
-    "DB_SOURCE": "postgresql://admin:admin@3.106.126.218:5432/job_service_jobstreet?sslmode=disable",
+    "DB_SOURCE": "postgresql://admin:admin@localhost:5432/job_service_jobstreet?sslmode=disable",
     "HTTPServerAddress": "0.0.0.0:8080",
     "GRPCServerAddress": "0.0.0.0:9090",
+    "EMPLOYER_SERVICE_ADDRESS": "http://0.0.0.0:4001",
     "COGNITO_REGION_CANDIDATES": "ap-southeast-2",
     "COGNITO_USER_POOL_ID_CANDIDATES": "ap-southeast-2_RCGi9wPa9",
     "COGNITO_REGION_EMPLOYERS": "ap-southeast-2",
