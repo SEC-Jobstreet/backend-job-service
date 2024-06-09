@@ -1,0 +1,69 @@
+name: backend-candidate-service CI CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '>=1.17.0'
+    - run: go version
+
+    - name: Install-Golang-Dependencies
+      run: go mod download
+
+    - name: Verify dependencies
+      run: go mod verify
+
+    - name: Test
+      run: make test
+
+    - name: Build
+      run: go build -o main main.go
+      
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: Build and push
+      uses: docker/build-push-action@v5.3.0
+      with:
+        context: .
+        push: true
+        tags: nguyenthuanit265/backend-job-service:latest
+
+    - name: Transfer Docker image to remote server
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+      
+    - name: Run remove docker container backend-job-service
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_ADDRESS }} << 'ENDSSH'
+        docker stop backend-jobstreet-job-service-prod
+        docker rm -f backend-jobstreet-job-service-prod
+        docker rmi -f nguyenthuanit265/backend-job-service:latest
+        ENDSSH
+    - name: Run docker container backend-job-service
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_ADDRESS }} << 'ENDSSH'
+        docker run --name backend-jobstreet-job-service-prod --network jobstreet-network -p 8080:8080 -p 9090:9090 -e ${{ secrets.ENV_BACKEND_JOB_SERVICE }} -d nguyenthuanit265/backend-job-service:latest
+        ENDSSH
