@@ -293,6 +293,68 @@
         ]
       }
     },
+    "/api/v1/number_of_job": {
+      "get": {
+        "summary": "Get number of jobs",
+        "description": "Use this API to get number of job",
+        "operationId": "JobService_GetNumberOfJob",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobGetNumberOfJobResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "JobService"
+        ]
+      }
+    },
+    "/api/v1/number_of_new_job": {
+      "get": {
+        "summary": "Get number of jobs",
+        "description": "Use this API to get number of job",
+        "operationId": "JobService_GetNumberOfNewJob",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/jobGetNumberOfNewJobResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "JobService"
+        ]
+      }
+    },
     "/api/v1/post_job": {
       "post": {
         "summary": "Post job",
@@ -449,6 +511,24 @@
       "properties": {
         "job": {
           "$ref": "#/definitions/jobJob"
+        }
+      }
+    },
+    "jobGetNumberOfJobResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "jobGetNumberOfNewJobResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

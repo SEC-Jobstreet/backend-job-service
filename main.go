@@ -20,6 +20,7 @@ import (
 	"github.com/SEC-Jobstreet/backend-job-service/domain/utils"
 	"github.com/SEC-Jobstreet/backend-job-service/pb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/redis/go-redis/v9"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -65,8 +66,15 @@ func main() {
 		log.Fatal().Msg("could not migrate db")
 	}
 
+	redisDB := redis.NewClient(&redis.Options{
+		Addr:     config.RedisAddress,
+		Username: config.RedisUsername,
+		Password: config.RedisPassword,
+	})
+	redisRepo := repository.NewRedisJobRepository(redisDB)
+
 	es := service.NewEmployerService(config.EmployerServiceAddress)
-	repository := repository.NewJobRepository(store, es)
+	repository := repository.NewJobRepository(store, redisRepo, es)
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
 

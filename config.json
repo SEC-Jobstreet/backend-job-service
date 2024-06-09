@@ -4,8 +4,11 @@
     "HTTPServerAddress": "0.0.0.0:8080",
     "GRPCServerAddress": "0.0.0.0:9090",
     "EMPLOYER_SERVICE_ADDRESS": "http://0.0.0.0:4001",
-    "COGNITO_REGION_CANDIDATES": "ap-southeast-2",
-    "COGNITO_USER_POOL_ID_CANDIDATES": "ap-southeast-2_RCGi9wPa9",
-    "COGNITO_REGION_EMPLOYERS": "ap-southeast-2",
-    "COGNITO_USER_POOL_ID_EMPLOYERS": "ap-southeast-2_04kZn9D5s"
+    "COGNITO_REGION_CANDIDATES": "a",
+    "COGNITO_USER_POOL_ID_CANDIDATES": "a_RCGi9wPa9",
+    "COGNITO_REGION_EMPLOYERS": "a",
+    "COGNITO_USER_POOL_ID_EMPLOYERS": "a_04kZn9D5s",
+    "redisAddress": "a",
+    "redisUsername": "default",
+    "redisPassword": "a"
 }

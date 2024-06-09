@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package jobstreet.job;
+
+option go_package = "github.com/SEC-Jobstreet/backend-job-service/pb";
+
+message GetNumberOfJobRequest {
+    
+}
+
+message GetNumberOfJobResponse {
+    int64 total = 1;
+}

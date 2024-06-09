@@ -16,6 +16,9 @@ type Config struct {
 	CognitoUserPoolIDCandidates string `mapstructure:"COGNITO_USER_POOL_ID_CANDIDATES"`
 	CognitoRegionEmployers      string `mapstructure:"COGNITO_REGION_EMPLOYERS"`
 	CognitoUserPoolIDEmployers  string `mapstructure:"COGNITO_USER_POOL_ID_EMPLOYERS"`
+	RedisAddress                string `mapstructure:"redisAddress"`
+	RedisUsername               string `mapstructure:"redisUsername"`
+	RedisPassword               string `mapstructure:"redisPassword"`
 }
 
 // LoadConfig reads configuration from file or environment variable.

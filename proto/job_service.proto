@@ -11,6 +11,8 @@ import "rpc_edit_job.proto";
 import "rpc_close_job.proto";
 import "rpc_change_status_by_admin.proto";
 import "rpc_get_job_list_by_admin.proto";
+import "rpc_get_number_of_job.proto";
+import "rpc_get_number_of_new_job.proto";
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
@@ -85,6 +87,24 @@ service JobService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       description: "Use this API to search jobs";
       summary: "Search jobs";
+    };
+  }
+  rpc GetNumberOfJob(GetNumberOfJobRequest) returns (GetNumberOfJobResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/number_of_job"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to get number of job";
+      summary: "Get number of jobs";
+    };
+  }
+  rpc GetNumberOfNewJob(GetNumberOfNewJobRequest) returns (GetNumberOfNewJobResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/number_of_new_job"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Use this API to get number of job";
+      summary: "Get number of jobs";
     };
   }
   rpc GetJobListByAdmin(JobListByAdminRequest) returns (JobListResponse) {

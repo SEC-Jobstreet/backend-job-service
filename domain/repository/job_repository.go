@@ -1,7 +1,10 @@
 package repository
 
 import (
+	"context"
+	"fmt"
 	"strings"
+	"time"
 
 	"github.com/SEC-Jobstreet/backend-job-service/domain/aggregate"
 	"github.com/SEC-Jobstreet/backend-job-service/domain/factory"
@@ -16,10 +19,12 @@ import (
 
 type JobRepository interface {
 	Create(aggregate aggregate.PostJobAggregate) error
+	GetJobByID(aggregate aggregate.GetJobByIDAggregate) (*pb.GetJobByIDResponse, error)
 	GetJobList(aggregate aggregate.GetJobListAggregate) (*pb.JobListResponse, error)
+	GetNumberOfJob() *pb.GetNumberOfJobResponse
+	GetNumberOfNewJob(aggregate aggregate.GetNumberOfNewJobAggregate) *pb.GetNumberOfNewJobResponse
 	GetJobListByEmployer(aggregate aggregate.GetJobListByEmployerAggregate) (*pb.JobListResponse, error)
 	GetJobListByAdmin(aggregate aggregate.GetJobListByAdminAggregate) (*pb.JobListResponse, error)
-	GetJobByID(aggregate aggregate.GetJobByIDAggregate) (*pb.GetJobByIDResponse, error)
 	EditJob(aggregate aggregate.EditJobAggregate) (*pb.EditJobResponse, error)
 	CloseJob(aggregate aggregate.CloseJobAggregate) (*pb.CloseJobResponse, error)
 	ChangeStatusJobByAdmin(aggregate aggregate.ChangeStatusJobByAdminAggregate) (*pb.ChangeStatusJobByAdminResponse, error)
@@ -27,12 +32,14 @@ type JobRepository interface {
 
 type jobRepo struct {
 	db              *gorm.DB
+	rdb             *RedisJobRepository
 	employerService *service.EmployerService
 }
 
-func NewJobRepository(db *gorm.DB, es *service.EmployerService) JobRepository {
+func NewJobRepository(db *gorm.DB, rdb *RedisJobRepository, es *service.EmployerService) JobRepository {
 	return &jobRepo{
 		db:              db,
+		rdb:             rdb,
 		employerService: es,
 	}
 }
@@ -58,7 +65,16 @@ func (jr *jobRepo) Create(aggregate aggregate.PostJobAggregate) error {
 }
 
 func (jr *jobRepo) GetJobList(aggregate aggregate.GetJobListAggregate) (*pb.JobListResponse, error) {
+	// Get from redis
+	key := "jobs?keyword=" + aggregate.Keyword + "&address=" + aggregate.Address +
+		"&pageid=" + fmt.Sprintf("%v", aggregate.PageId) + "&pagesize=" + fmt.Sprintf("%v", aggregate.PageSize)
+	if jobsListRedis, err := jr.rdb.GetJobList(context.Background(), key); err == nil && len(jobsListRedis.Jobs) != 0 {
+		jobsListRedis.PageId = aggregate.PageId
+		jobsListRedis.PageSize = aggregate.PageSize
+		return jobsListRedis, err
+	}
 
+	// Get from db
 	jobs := []model.Jobs{}
 
 	keyword := "%" + aggregate.Keyword + "%"
@@ -85,17 +101,22 @@ func (jr *jobRepo) GetJobList(aggregate aggregate.GetJobListAggregate) (*pb.JobL
 
 	tx.Count(&total)
 
-	err := tx.Limit(int(aggregate.PageSize)).Offset(int(aggregate.PageId-1) * int(aggregate.PageSize)).Find(&jobs).Error
+	err := tx.Limit(int(aggregate.PageSize)).Offset(int(aggregate.PageId-1) * int(aggregate.PageSize)).Find(&jobs).Order("created_at DESC").Error
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get jobs:%s", err)
 	}
 
-	return &pb.JobListResponse{
+	res := pb.JobListResponse{
 		Total:    total,
 		PageId:   aggregate.PageId,
 		PageSize: aggregate.PageSize,
 		Jobs:     factory.ConvertJobList(jobs),
-	}, err
+	}
+
+	// Save to redis
+	jr.rdb.SaveJobList(context.Background(), key, total, jobs)
+
+	return &res, err
 }
 
 func (jr *jobRepo) GetJobListByEmployer(aggregate aggregate.GetJobListByEmployerAggregate) (*pb.JobListResponse, error) {
@@ -150,13 +171,25 @@ func (jr *jobRepo) GetJobListByAdmin(aggregate aggregate.GetJobListByAdminAggreg
 }
 
 func (jr *jobRepo) GetJobByID(aggregate aggregate.GetJobByIDAggregate) (*pb.GetJobByIDResponse, error) {
+	// Get from redis
+	jobRdis, err := jr.rdb.GetJob(context.Background(), "job/"+aggregate.ID.String())
+	if err == nil {
+		return &pb.GetJobByIDResponse{
+			Job: factory.ConvertJob(*jobRdis),
+		}, nil
+	}
+
+	// Get from db
 	job := &model.Jobs{
 		ID: aggregate.ID,
 	}
-	err := jr.db.First(job).Error
+	err = jr.db.First(job).Error
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get job:%s", err)
 	}
+
+	// save to redis
+	jr.rdb.SaveJob(context.Background(), "job/"+aggregate.ID.String(), *job)
 
 	return &pb.GetJobByIDResponse{
 		Job: factory.ConvertJob(*job),
@@ -198,4 +231,41 @@ func (jr *jobRepo) ChangeStatusJobByAdmin(aggregate aggregate.ChangeStatusJobByA
 	return &pb.ChangeStatusJobByAdminResponse{
 		Status: "OK",
 	}, nil
+}
+
+func (jr *jobRepo) GetNumberOfJob() *pb.GetNumberOfJobResponse {
+	if total, err := jr.rdb.GetNumber(context.Background(), "numberofjob"); err == nil && total != 0 {
+		return &pb.GetNumberOfJobResponse{
+			Total: total,
+		}
+	}
+
+	var total int64
+	jr.db.Model(&model.Jobs{}).Where("status = ?", "POSTED").Count(&total)
+
+	jr.rdb.SaveNumber(context.Background(), "numberofjob", total)
+
+	return &pb.GetNumberOfJobResponse{
+		Total: total,
+	}
+}
+
+func (jr *jobRepo) GetNumberOfNewJob(aggregate aggregate.GetNumberOfNewJobAggregate) *pb.GetNumberOfNewJobResponse {
+	key := "numberofnewjob?" + "keyword=" + aggregate.Keyword + "&address=" + aggregate.Address
+	if total, err := jr.rdb.GetNumber(context.Background(), key); err == nil && total != 0 {
+		return &pb.GetNumberOfNewJobResponse{
+			Total: total,
+		}
+	}
+
+	var total int64
+	t := time.Now().Add(-24 * time.Hour).Unix()
+
+	jr.db.Model(&model.Jobs{}).Where("status = ?", "POSTED").Where("updated_at > ?", t).Count(&total)
+
+	jr.rdb.SaveNumber(context.Background(), key, total)
+
+	return &pb.GetNumberOfNewJobResponse{
+		Total: total,
+	}
 }
