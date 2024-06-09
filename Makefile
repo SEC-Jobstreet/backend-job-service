@@ -74,8 +74,6 @@ proto:
 # run test
 test:
 	go test -v -cover -short ./...
-	go test -v -cover -coverprofile cover.out -outputdir ./covers/ ./...
-	go tool cover -html ./covers/cover.out -o ./covers/cover.html
 
 rabbitmq:
 	-docker network connect jobstreet-network some-rabbit
