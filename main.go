@@ -20,6 +20,7 @@ import (
 	"github.com/SEC-Jobstreet/backend-job-service/domain/utils"
 	"github.com/SEC-Jobstreet/backend-job-service/pb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
@@ -73,8 +74,15 @@ func main() {
 	})
 	redisRepo := repository.NewRedisJobRepository(redisDB)
 
+	conn, err := amqp.Dial(config.RabbitMQAddress)
+	if err != nil {
+		log.Fatal().Msg("could not run rabbitmq db")
+	}
+	defer conn.Close()
+	rabbitmq := service.NewRabbitMQService(config.RabbitMQAddress, conn)
+
 	es := service.NewEmployerService(config.EmployerServiceAddress)
-	repository := repository.NewJobRepository(store, redisRepo, es)
+	repository := repository.NewJobRepository(store, redisRepo, es, rabbitmq)
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
 

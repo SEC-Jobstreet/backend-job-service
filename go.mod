@@ -7,6 +7,7 @@ require (
 	github.com/google/uuid v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/mitchellh/mapstructure v1.5.0
+	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/redis/go-redis/v9 v9.5.3
 	github.com/rs/cors v1.11.0
 	github.com/rs/zerolog v1.32.0

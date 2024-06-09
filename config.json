@@ -10,5 +10,6 @@
     "COGNITO_USER_POOL_ID_EMPLOYERS": "a_04kZn9D5s",
     "redisAddress": "a",
     "redisUsername": "default",
-    "redisPassword": "a"
+    "redisPassword": "a",
+    "rabbitMQAddress": "a"
 }

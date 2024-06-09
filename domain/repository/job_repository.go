@@ -34,13 +34,15 @@ type jobRepo struct {
 	db              *gorm.DB
 	rdb             *RedisJobRepository
 	employerService *service.EmployerService
+	rabbitmq        *service.RabbitMQService
 }
 
-func NewJobRepository(db *gorm.DB, rdb *RedisJobRepository, es *service.EmployerService) JobRepository {
+func NewJobRepository(db *gorm.DB, rdb *RedisJobRepository, es *service.EmployerService, rabbitmq *service.RabbitMQService) JobRepository {
 	return &jobRepo{
 		db:              db,
 		rdb:             rdb,
 		employerService: es,
+		rabbitmq:        rabbitmq,
 	}
 }
 
@@ -227,6 +229,20 @@ func (jr *jobRepo) ChangeStatusJobByAdmin(aggregate aggregate.ChangeStatusJobByA
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to close job: %s", err)
 	}
+
+	go func() {
+		if aggregate.Job["Status"] == "POSTED" {
+			job := &model.Jobs{
+				ID: aggregate.JobID,
+			}
+			err = jr.db.First(job).Error
+			if err != nil {
+				fmt.Println(status.Errorf(codes.Internal, "failed to get job:%s", err))
+				return
+			}
+			jr.rabbitmq.PublishMessageToQueue(*job)
+		}
+	}()
 
 	return &pb.ChangeStatusJobByAdminResponse{
 		Status: "OK",
