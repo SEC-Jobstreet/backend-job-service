@@ -28,7 +28,30 @@ func PostJobAggregateGRPC(ctx context.Context, request *pb.PostJobRequest) (*Pos
 		return nil, utils.InvalidArgumentError(violations)
 	}
 
-	enterpriseId, _ := uuid.NewRandom()
+	var enterpriseId uuid.UUID
+	var enterprise entity.Enterprise
+	if request.GetEnterpriseId() == "" {
+		enterpriseId, _ = uuid.NewRandom()
+		enterprise = entity.Enterprise{
+			ID:        enterpriseId,
+			Name:      request.GetEnterpriseName(),
+			Country:   request.GetEnterpriseCountry(),
+			Address:   request.GetEnterpriseAddress(),
+			Latitude:  request.GetEnterpriseLatitude(),
+			Longitude: request.GetEnterpriseLongitude(),
+			Field:     request.GetEnterpriseField(),
+			Size:      request.GetEnterpriseSize(),
+			Url:       request.GetEnterpriseUrl(),
+
+			EmployerID:   request.GetEmployerId(),
+			EmployerRole: request.GetEmployerRole(),
+		}
+	} else {
+		enterpriseId, err = uuid.Parse(request.GetEnterpriseId())
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	job := model.Jobs{
 		ID:                 id,
@@ -58,21 +81,6 @@ func PostJobAggregateGRPC(ctx context.Context, request *pb.PostJobRequest) (*Pos
 		job.Crawl = request.GetCrawl()
 		job.JobURL = request.GetJobUrl()
 		job.JobSourceName = request.GetJobSourceName()
-	}
-
-	enterprise := entity.Enterprise{
-		ID:        enterpriseId,
-		Name:      request.GetEnterpriseName(),
-		Country:   request.GetEnterpriseCountry(),
-		Address:   request.GetEnterpriseAddress(),
-		Latitude:  request.GetEnterpriseLatitude(),
-		Longitude: request.GetEnterpriseLongitude(),
-		Field:     request.GetEnterpriseField(),
-		Size:      request.GetEnterpriseSize(),
-		Url:       request.GetEnterpriseUrl(),
-
-		EmployerID:   request.GetEmployerId(),
-		EmployerRole: request.GetEmployerRole(),
 	}
 
 	return &PostJobAggregate{

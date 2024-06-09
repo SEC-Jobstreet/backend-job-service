@@ -76,7 +76,7 @@ func main() {
 
 	conn, err := amqp.Dial(config.RabbitMQAddress)
 	if err != nil {
-		log.Fatal().Msg("could not run rabbitmq db")
+		log.Fatal().Msg("could not run rabbitmq db" + err.Error() + config.RabbitMQAddress)
 	}
 	defer conn.Close()
 	rabbitmq := service.NewRabbitMQService(config.RabbitMQAddress, conn)

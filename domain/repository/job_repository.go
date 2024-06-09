@@ -11,6 +11,7 @@ import (
 	"github.com/SEC-Jobstreet/backend-job-service/domain/repository/model"
 	"github.com/SEC-Jobstreet/backend-job-service/domain/service"
 	"github.com/SEC-Jobstreet/backend-job-service/pb"
+	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
@@ -57,11 +58,15 @@ func (jr *jobRepo) Create(aggregate aggregate.PostJobAggregate) error {
 		return status.Errorf(codes.Internal, "failed to create account: %s", tx.Error)
 	}
 
-	err := jr.employerService.CreateEnterprise(aggregate.Enterprise)
-	if err != nil {
-		tx.Rollback()
-		return err
+	var temp uuid.UUID
+	if aggregate.Enterprise.ID != temp {
+		err := jr.employerService.CreateEnterprise(aggregate.Enterprise)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
+
 	tx.Commit()
 	return nil
 }

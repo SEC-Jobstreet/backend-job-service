@@ -19,7 +19,7 @@ type Config struct {
 	RedisAddress                string `mapstructure:"redisAddress"`
 	RedisUsername               string `mapstructure:"redisUsername"`
 	RedisPassword               string `mapstructure:"redisPassword"`
-	RabbitMQAddress             string `mapstructure:"rabbitMQAddress"`
+	RabbitMQAddress             string `mapstructure:"RABBITMQ_ADDRESS"`
 }
 
 // LoadConfig reads configuration from file or environment variable.

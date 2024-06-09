@@ -78,6 +78,7 @@ test:
 	go tool cover -html ./covers/cover.out -o ./covers/cover.html
 
 rabbitmq:
-	docker run -d --hostname my-rabbit --name some-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3.12-management
+	-docker network connect jobstreet-network some-rabbit
+	docker run -d --hostname my-rabbit --name some-rabbit --network jobstreet-network -p 15672:15672 -p 5672:5672 rabbitmq:3.12-management
 
 .PHONY: build_run_prod new_migrate run_postgres migrate dropdb createdb start_postgres sqlc evans swagger proto rabbitmq
