@@ -8,8 +8,8 @@
     "COGNITO_USER_POOL_ID_CANDIDATES": "a_RCGi9wPa9",
     "COGNITO_REGION_EMPLOYERS": "a",
     "COGNITO_USER_POOL_ID_EMPLOYERS": "a_04kZn9D5s",
-    "redisAddress": "a",
+    "redisAddress": "redis-19163.c252.ap-southeast-1-1.ec2.redns.redis-cloud.com:19163",
     "redisUsername": "default",
-    "redisPassword": "a",
-    "rabbitMQAddress": "a"
+    "redisPassword": "JOEHtGYiK1gvvlkYK2VRkR0QD3HdibLT",
+    "RABBITMQ_ADDRESS": "a"
 }
