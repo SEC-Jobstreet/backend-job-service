@@ -282,7 +282,22 @@ func (jr *jobRepo) GetNumberOfNewJob(aggregate aggregate.GetNumberOfNewJobAggreg
 	var total int64
 	t := time.Now().Add(-24 * time.Hour).Unix()
 
-	jr.db.Model(&model.Jobs{}).Where("status = ?", "POSTED").Where("updated_at > ?", t).Count(&total)
+	keyword := "%" + aggregate.Keyword + "%"
+	address := "%" + aggregate.Address + "%"
+
+	jr.db.Model(&model.Jobs{}).Where(
+		jr.db.Where(
+			jr.db.Where(
+				jr.db.Where("title LIKE ?", keyword),
+			).Or(
+				jr.db.Where("description LIKE ?", keyword),
+			)).Where(
+			jr.db.Where(
+				jr.db.Where("enterprise_address LIKE ?", address),
+			).Or(
+				jr.db.Where("description LIKE ?", address),
+			)).
+			Where("status = ?", "POSTED").Where("updated_at > ?", t)).Count(&total)
 
 	jr.rdb.SaveNumber(context.Background(), key, total)
 
