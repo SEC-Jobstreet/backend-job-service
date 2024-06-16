@@ -210,6 +210,16 @@ func (jr *jobRepo) EditJob(aggregate aggregate.EditJobAggregate) (*pb.EditJobRes
 		return nil, status.Errorf(codes.Internal, "failed to update job: %s", err)
 	}
 
+	job := &model.Jobs{
+		ID: aggregate.JobID,
+	}
+	err = jr.db.First(job).Error
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get job:%s", err)
+	}
+
+	jr.rdb.SaveJob(context.Background(), "job/"+aggregate.JobID.String(), *job)
+
 	return &pb.EditJobResponse{
 		Job: factory.ConvertMapJob(aggregate.Job),
 	}, nil
